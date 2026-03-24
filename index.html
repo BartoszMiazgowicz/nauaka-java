@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JavaMaster — Kurs Javy i Gradle</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0c14;
+      color: #e0e0e0;
+    }
+
+    /* NAV */
+    nav {
+      background: rgba(15,17,28,0.95);
+      backdrop-filter: blur(10px);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      height: 64px;
+      border-bottom: 1px solid #1e2235;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #f89820;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+    .logo:active { transform: scale(0.92); }
+    .logo span { color: #fff; }
+    .nav-divider { width: 1px; height: 28px; background: #1e2235; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      color: #888;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: #fff; background: #1e2235; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .badge {
+      background: #f89820;
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 100px 40px 80px;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 0%, #1a1f3a 0%, #0a0c14 65%);
+      border-bottom: 1px solid #1e2235;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(248,152,32,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(248,152,32,0.1);
+      border: 1px solid rgba(248,152,32,0.3);
+      color: #f89820;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: 58px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+    }
+    .hero h1 span { color: #f89820; }
+    .hero p {
+      font-size: 18px;
+      color: #7a8099;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: #f89820;
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #ffa832; transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent;
+      color: #ccc;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: 1px solid #2a2d3e;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: #555; color: #fff; }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid #1e2235;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 32px; font-weight: 900; color: #fff; }
+    .hero-stat .num span { color: #f89820; }
+    .hero-stat .lbl { font-size: 13px; color: #555; margin-top: 4px; }
+
+    /* TRUST BAR */
+    .trust-bar {
+      background: #0d0f1c;
+      border-bottom: 1px solid #1e2235;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #444;
+      flex-wrap: wrap;
+    }
+    .trust-bar span { color: #666; }
+    .trust-bar strong { color: #888; }
+
+    /* SECTIONS */
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    section { padding: 80px 0; border-bottom: 1px solid #1e2235; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #f89820;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: #666;
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    /* CARDS */
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: #0f1220;
+      border: 1px solid #1e2235;
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: #f89820; transform: translateY(-3px); }
+    .card-icon {
+      width: 44px; height: 44px;
+      background: rgba(248,152,32,0.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .card h4 { color: #fff; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .card p { color: #666; font-size: 14px; line-height: 1.6; }
+
+    /* CODE BLOCK */
+    .code-wrap {
+      background: #0d0f1c;
+      border: 1px solid #1e2235;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 24px 0;
+    }
+    .code-header {
+      background: #111425;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #1e2235;
+    }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-filename { font-size: 12px; color: #555; margin-left: 8px; font-family: monospace; }
+    .code-block {
+      padding: 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .kw  { color: #c792ea; }
+    .cl  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .cm  { color: #3d4f5a; }
+    .fn  { color: #f89820; }
+    .num-lit { color: #f78c6c; }
+
+    /* CURRICULUM */
+    .curriculum { display: flex; flex-direction: column; gap: 4px; }
+    .lesson {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: #0f1220;
+      border: 1px solid #1e2235;
+      border-radius: 10px;
+      transition: border-color 0.2s;
+      cursor: default;
+    }
+    .lesson:hover { border-color: #2a2d50; }
+    .lesson-num {
+      width: 32px; height: 32px;
+      background: #1a1d2e;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+      flex-shrink: 0;
+    }
+    .lesson.done .lesson-num { background: rgba(248,152,32,0.15); color: #f89820; }
+    .lesson-title { font-size: 14px; font-weight: 600; color: #ccc; flex: 1; }
+    .lesson.done .lesson-title { color: #fff; }
+    .lesson-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .tag-java { background: rgba(248,152,32,0.1); color: #f89820; }
+    .tag-gradle { background: rgba(130,170,255,0.1); color: #82aaff; }
+    .tag-projekt { background: rgba(195,232,141,0.1); color: #c3e88d; }
+
+    /* FAQ */
+    .faq { display: flex; flex-direction: column; gap: 2px; }
+    .faq-item {
+      background: #0f1220;
+      border: 1px solid #1e2235;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 18px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #ccc;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-q:hover { color: #fff; }
+    .faq-q .arrow { color: #444; font-size: 18px; transition: transform 0.2s; }
+    .faq-item.open .faq-q .arrow { transform: rotate(180deg); color: #f89820; }
+    .faq-a {
+      display: none;
+      padding: 0 20px 18px;
+      font-size: 14px;
+      color: #666;
+      line-height: 1.7;
+      border-top: 1px solid #1e2235;
+      padding-top: 16px;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* CHECKLIST */
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 15px; color: #bbb; line-height: 1.5;
+    }
+    .checklist li::before {
+      content: '✓';
+      color: #f89820;
+      font-weight: 900;
+      font-size: 14px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* TWO COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* TECH STACK */
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .tech-pill {
+      background: #0f1220;
+      border: 1px solid #1e2235;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tech-pill span { font-size: 16px; }
+
+    /* EASTER EGG COUNTER */
+    .egg-counter {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 50;
+    }
+    .egg-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #1e2235;
+      transition: background 0.3s;
+    }
+    .egg-dot.active { background: #f89820; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 1000;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #0f1220;
+      border: 2px solid #f89820;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+      position: relative;
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none;
+      color: #444; font-size: 28px;
+      cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: #fff; }
+    .modal h2 { font-size: 26px; color: #f89820; margin-bottom: 8px; }
+    .modal .subtitle { color: #555; font-size: 13px; margin-bottom: 30px; font-style: italic; }
+    .modal-step { margin-bottom: 28px; }
+    .modal-step h4 {
+      color: #fff; font-size: 16px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .modal-step h4 .num {
+      background: #f89820; color: #000;
+      font-weight: 800; font-size: 13px;
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .modal-step p { color: #888; font-size: 14px; margin-bottom: 10px; line-height: 1.6; }
+    .modal-step .code-block { font-size: 13px; margin: 8px 0; background: #0a0c14; border-radius: 8px; padding: 16px 20px; border: 1px solid #1e2235; }
+    .file-label {
+      display: inline-block; background: #1a1d2e; color: #f89820;
+      font-size: 12px; font-family: monospace;
+      padding: 3px 10px; border-radius: 4px; margin-bottom: 6px;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #0a0c14;
+      border-top: 1px solid #1e2235;
+      padding: 48px 40px 32px;
+    }
+    .footer-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+    }
+    @media (max-width: 700px) { .footer-inner { grid-template-columns: 1fr; } }
+    .footer-brand p { color: #444; font-size: 13px; line-height: 1.7; margin-top: 10px; max-width: 280px; }
+    .footer-col h5 { font-size: 12px; font-weight: 700; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: #444; text-decoration: none; font-size: 14px; margin-bottom: 8px; transition: color 0.2s; }
+    .footer-col a:hover { color: #888; }
+    .footer-bottom { max-width: 1000px; margin: 32px auto 0; padding-top: 20px; border-top: 1px solid #1e2235; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .footer-bottom p { color: #333; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" id="logo">☕ <span>JavaMaster</span></div>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="#program">Program</a>
+    <a href="#java">Java</a>
+    <a href="#gradle">Gradle</a>
+    <a href="#projekt">Projekt</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-right">
+    <span class="badge">DARMOWY</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">☕ Programowanie Java</div>
+  <h1>Opanuj <span>Javę</span><br>i <span>Gradle</span></h1>
+  <p>Kompletny przewodnik od zera — klasy, obiekty, wielomodułowe projekty. Bez zbędnej teorii, tylko to co działa.</p>
+  <div class="hero-buttons">
+    <a href="#program" class="btn-primary">Zacznij naukę</a>
+    <a href="#projekt" class="btn-secondary">Zobacz projekt</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">4<span>+</span></div>
+      <div class="lbl">Lekcje</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">3<span></span></div>
+      <div class="lbl">Pliki kodu</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">1<span></span></div>
+      <div class="lbl">Działający projekt</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">0<span></span></div>
+      <div class="lbl">Wymagań wstępnych</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <span>Technologie używane w kursie:</span>
+  <strong>Java 17</strong> ·
+  <strong>Gradle 9</strong> ·
+  <strong>IntelliJ IDEA</strong> ·
+  <strong>jsoup 1.14</strong> ·
+  <strong>Maven Central</strong>
+</div>
+
+<!-- PROGRAM -->
+<section id="program">
+  <div class="container">
+    <div class="section-label">Program kursu</div>
+    <div class="section-title">Co przerabiamy</div>
+    <p class="section-sub">Cztery zadania prowadzące od pustego folderu do działającej aplikacji pobierającej strony z internetu.</p>
+    <div class="curriculum">
+      <div class="lesson done">
+        <div class="lesson-num">1</div>
+        <div class="lesson-title">Struktura projektu Gradle — moduły, settings.gradle, build.gradle</div>
+        <span class="lesson-tag tag-gradle">Gradle</span>
+      </div>
+      <div class="lesson done">
+        <div class="lesson-num">2</div>
+        <div class="lesson-title">Moduł java — biblioteka jsoup, klasy narzędziowe</div>
+        <span class="lesson-tag tag-java">Java</span>
+      </div>
+      <div class="lesson done">
+        <div class="lesson-num">3</div>
+        <div class="lesson-title">Moduł java-application — plugin application, klasa main</div>
+        <span class="lesson-tag tag-projekt">Projekt</span>
+      </div>
+      <div class="lesson done">
+        <div class="lesson-num">4</div>
+        <div class="lesson-title">Zadanie dodatkowe — modyfikacja tasku run, blok doFirst</div>
+        <span class="lesson-tag tag-gradle">Gradle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CO UMIESZ PO -->
+<section id="czego-sie-nauczysz">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <div class="section-label">Efekty nauki</div>
+        <div class="section-title">Co umiesz po tym kursie</div>
+        <p class="section-sub">Konkretne umiejętności, nie teorię.</p>
+        <ul class="checklist">
+          <li>Tworzysz projekt Java z wieloma modułami w Gradle</li>
+          <li>Rozumiesz różnicę między <code style="color:#f89820">java-library</code> a <code style="color:#f89820">application</code></li>
+          <li>Dodajesz zewnętrzne biblioteki przez <code style="color:#f89820">dependencies</code></li>
+          <li>Piszesz klasy z metodami statycznymi i instancyjnymi</li>
+          <li>Obsługujesz wyjątki blokiem <code style="color:#f89820">try/catch</code></li>
+          <li>Uruchamiasz aplikację z argumentami przez terminal</li>
+          <li>Modyfikujesz taski Gradle blokiem <code style="color:#f89820">doFirst</code></li>
+        </ul>
+      </div>
+      <div>
+        <div class="section-label">Technologia</div>
+        <div class="section-title" style="font-size:26px;">Stack projektu</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><span>☕</span> Java 17</div>
+          <div class="tech-pill"><span>🐘</span> Gradle 9</div>
+          <div class="tech-pill"><span>🧹</span> jsoup 1.14</div>
+          <div class="tech-pill"><span>💡</span> IntelliJ IDEA</div>
+          <div class="tech-pill"><span>📦</span> Maven Central</div>
+          <div class="tech-pill"><span>🖥️</span> Terminal / cmd</div>
+        </div>
+        <div style="margin-top:28px; background:#0f1220; border:1px solid #1e2235; border-radius:10px; padding:20px;">
+          <p style="font-size:13px; color:#555; margin-bottom:8px;">Gotowy wynik działania programu:</p>
+          <div style="font-family:monospace; font-size:13px; line-height:1.8; color:#aaa;">
+            <span style="color:#555">$</span> gradlew :html-removing-application:run<br>
+            &nbsp;&nbsp;--args="http://example.com"<br>
+            <span style="color:#666">> Task :html-removing-application:run</span><br>
+            <span style="color:#f89820">Uruchamiam aplikację z argumentami</span><br>
+            <span style="color:#c3e88d">[http://example.com]</span><br>
+            <span style="color:#aaa">Example Domain This domain is for use...</span><br>
+            <span style="color:#4caf50">BUILD SUCCESSFUL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JAVA -->
+<section id="java">
+  <div class="container">
+    <div class="section-label">Podstawy</div>
+    <div class="section-title">Java w pigułce</div>
+    <p class="section-sub">Wszystko co musisz wiedzieć żeby zrozumieć kod projektu.</p>
+    <div class="cards-3">
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h4>Klasy i obiekty</h4>
+        <p>Klasa to szablon (przepis), obiekt to konkretna rzecz stworzona według tego przepisu. Tworzysz go przez <code style="color:#f89820">new NazwaKlasy()</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h4>Metody statyczne</h4>
+        <p>Metoda z <code style="color:#f89820">static</code> nie wymaga tworzenia obiektu. Wywołujesz ją przez <code style="color:#f89820">Klasa.metoda()</code> — tak jak <code>Math.random()</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h4>Prywatny konstruktor</h4>
+        <p>Jeśli klasa ma <code style="color:#f89820">private</code> konstruktor, nie można zrobić <code>new</code>. Używasz tylko metod statycznych. To wzorzec utility class.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h4>Try / Catch</h4>
+        <p>Blok <code style="color:#f89820">try</code> próbuje wykonać ryzykowny kod. Jeśli coś się nie uda (np. brak internetu), <code style="color:#f89820">catch</code> przechwytuje błąd.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h4>Package (pakiet)</h4>
+        <p>Pierwsza linia pliku <code style="color:#f89820">package pl.edu...</code> mówi Javie gdzie logicznie leży klasa. Musi pasować do struktury folderów.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔗</div>
+        <h4>Import</h4>
+        <p>Żeby użyć klasy z innej biblioteki (np. <code>Jsoup</code>), musisz ją zaimportować przez <code style="color:#f89820">import org.jsoup.Jsoup;</code> na górze pliku.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:40px; color:#555; font-size:13px; margin-bottom:8px;">Przykład — prosta klasa z metodami:</p>
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dot" style="background:#ff5f57"></div>
+        <div class="code-dot" style="background:#febc2e"></div>
+        <div class="code-dot" style="background:#28c840"></div>
+        <span class="code-filename">Kalkulator.java</span>
+      </div>
+      <div class="code-block">
+<span class="kw">public class</span> <span class="cl">Kalkulator</span> {<br>
+<br>
+&nbsp;&nbsp;<span class="cm">// metoda statyczna — można wywołać bez new Kalkulator()</span><br>
+&nbsp;&nbsp;<span class="kw">public static int</span> <span class="fn">dodaj</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> a + b;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="cm">// punkt startowy programu — Java zawsze zaczyna tutaj</span><br>
+&nbsp;&nbsp;<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">int</span> wynik = <span class="cl">Kalkulator</span>.<span class="fn">dodaj</span>(<span class="num-lit">3</span>, <span class="num-lit">5</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Wynik: "</span> + wynik); <span class="cm">// wypisze: Wynik: 8</span><br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRADLE -->
+<section id="gradle">
+  <div class="container">
+    <div class="section-label">Narzędzie budowania</div>
+    <div class="section-title">Gradle — po co i jak</div>
+    <p class="section-sub">Gradle robi za Ciebie kompilację, pobieranie bibliotek i uruchamianie. Ty tylko opisujesz co chcesz, on robi resztę.</p>
+    <div class="cards-3">
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <h4>settings.gradle</h4>
+        <p>Plik w głównym folderze. Mówi Gradle jak projekt się nazywa i jakie moduły w nim są. Bez tego Gradle nie widzi podfolderów jako modułów.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚙️</div>
+        <h4>build.gradle</h4>
+        <p>Każdy moduł ma swój plik build.gradle. Tutaj wpisujesz: jaki plugin (java-library lub application) i jakich bibliotek potrzebujesz.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">▶️</div>
+        <h4>Taski (zadania)</h4>
+        <p>Gotowe komendy: <code style="color:#f89820">build</code> — skompiluj wszystko. <code style="color:#f89820">run</code> — uruchom aplikację. <code style="color:#f89820">test</code> — odpal testy.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-dot" style="background:#ff5f57"></div>
+          <div class="code-dot" style="background:#febc2e"></div>
+          <div class="code-dot" style="background:#28c840"></div>
+          <span class="code-filename">html-remover / build.gradle</span>
+        </div>
+        <div class="code-block" style="font-size:13px;">
+<span class="fn">plugins</span> {<br>
+&nbsp;&nbsp;id <span class="str">'java-library'</span> <span class="cm">// biblioteka</span><br>
+}<br>
+<span class="fn">repositories</span> {<br>
+&nbsp;&nbsp;<span class="fn">mavenCentral</span>()<br>
+}<br>
+<span class="fn">dependencies</span> {<br>
+&nbsp;&nbsp;implementation <span class="str">'org.jsoup:jsoup:1.14.3'</span><br>
+}
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-dot" style="background:#ff5f57"></div>
+          <div class="code-dot" style="background:#febc2e"></div>
+          <div class="code-dot" style="background:#28c840"></div>
+          <span class="code-filename">html-removing-application / build.gradle</span>
+        </div>
+        <div class="code-block" style="font-size:13px;">
+<span class="fn">plugins</span> {<br>
+&nbsp;&nbsp;id <span class="str">'application'</span> <span class="cm">// aplikacja z main()</span><br>
+}<br>
+<span class="fn">dependencies</span> {<br>
+&nbsp;&nbsp;implementation project(<span class="str">':html-remover'</span>)<br>
+}<br>
+<span class="fn">application</span> {<br>
+&nbsp;&nbsp;mainClass = <span class="str">'...Application'</span><br>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJEKT -->
+<section id="projekt">
+  <div class="container">
+    <div class="section-label">Architektura</div>
+    <div class="section-title">Jak zbudowany jest projekt</div>
+    <p class="section-sub">Dwa moduły — jeden dostarcza narzędzia, drugi je używa i uruchamia aplikację.</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="card" style="border-color:#f89820; border-opacity:0.5;">
+        <div class="card-icon" style="background:rgba(248,152,32,0.15);">📚</div>
+        <h4 style="color:#f89820;">html-remover</h4>
+        <p style="margin-bottom:16px;">Biblioteka. Dostarcza dwie klasy narzędziowe do pobierania i czyszczenia HTML. Inne moduły mogą z niej korzystać.</p>
+        <div style="font-size:13px; color:#555; line-height:2;">
+          📄 <span style="color:#888">StringHtmlCleaner.java</span><br>
+          📄 <span style="color:#888">PageDownloadingUtility.java</span><br>
+          📄 <span style="color:#888">build.gradle</span>
+        </div>
+      </div>
+      <div class="card" style="border-color:#82aaff; border-opacity:0.5;">
+        <div class="card-icon" style="background:rgba(130,170,255,0.1);">🚀</div>
+        <h4 style="color:#82aaff;">html-removing-application</h4>
+        <p style="margin-bottom:16px;">Aplikacja. Ma klasę <code style="color:#f89820">main()</code>. Korzysta z modułu html-remover, bierze URL z argumentu i wypisuje czysty tekst.</p>
+        <div style="font-size:13px; color:#555; line-height:2;">
+          📄 <span style="color:#888">Application.java</span><br>
+          📄 <span style="color:#888">build.gradle</span><br>
+          &nbsp;
+        </div>
+      </div>
+    </div>
+
+    <div class="code-wrap" style="margin-top:24px;">
+      <div class="code-header">
+        <div class="code-dot" style="background:#ff5f57"></div>
+        <div class="code-dot" style="background:#febc2e"></div>
+        <div class="code-dot" style="background:#28c840"></div>
+        <span class="code-filename">Application.java — serce programu</span>
+      </div>
+      <div class="code-block">
+<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br>
+&nbsp;&nbsp;<span class="cl">String</span> url = args[<span class="num-lit">0</span>]; <span class="cm">// adres strony podany przez użytkownika</span><br>
+&nbsp;&nbsp;<span class="cl">String</span> html = <span class="cl">PageDownloadingUtility</span>.<span class="fn">download</span>(url); <span class="cm">// pobierz HTML</span><br>
+&nbsp;&nbsp;<span class="cl">StringHtmlCleaner</span> cleaner = <span class="kw">new</span> <span class="cl">StringHtmlCleaner</span>();<br>
+&nbsp;&nbsp;<span class="cl">String</span> czysty = cleaner.<span class="fn">clean</span>(html); <span class="cm">// usuń tagi HTML</span><br>
+&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(czysty); <span class="cm">// wypisz na ekran</span><br>
+}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-label">Najczęstsze pytania</div>
+    <div class="section-title">FAQ</div>
+    <p class="section-sub">Odpowiedzi na pytania które pewnie masz.</p>
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q">Co to jest Gradle Wrapper i po co go uruchamiać?<span class="arrow">▾</span></div>
+        <div class="faq-a">Gradle Wrapper to plik <code>gradlew.bat</code> który sam pobiera i uruchamia Gradle. Dzięki temu każdy może uruchomić projekt bez instalowania Gradle ręcznie. Generujesz go raz przez <code>gradle wrapper</code> i potem wszystko działa przez <code>gradlew</code>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jaka różnica między <code>java-library</code> a <code>application</code>?<span class="arrow">▾</span></div>
+        <div class="faq-a"><code>java-library</code> to moduł który dostarcza klasy dla innych modułów — nie ma metody main, nie da się go uruchomić bezpośrednio. <code>application</code> to moduł który ma metodę <code>main()</code> i można go odpalić komendą <code>gradlew run</code>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Po co prywatny konstruktor w PageDownloadingUtility?<span class="arrow">▾</span></div>
+        <div class="faq-a">Prywatny konstruktor blokuje możliwość napisania <code>new PageDownloadingUtility()</code>. To wzorzec "utility class" — klasa która ma tylko metody statyczne i nie ma sensu tworzyć jej obiektów. Wywołujesz metodę bezpośrednio: <code>PageDownloadingUtility.download(url)</code>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Co robi <code>doFirst</code> w Gradle?<span class="arrow">▾</span></div>
+        <div class="faq-a"><code>doFirst</code> to blok kodu który wykonuje się jako pierwszy, przed właściwym działaniem tasku. W zadaniu dodatkowym modyfikujesz task <code>run</code> tak żeby przed uruchomieniem programu wypisał jakie argumenty dostał.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Dlaczego strona kssk.pwr.edu.pl nie działa?<span class="arrow">▾</span></div>
+        <div class="faq-a">Ta strona ma nieważny certyfikat SSL — Java odmawia połączenia dla bezpieczeństwa. To problem serwera uczelni, nie Twojego kodu. Możesz przetestować aplikację na dowolnej innej stronie np. <code>http://example.com</code> — kod jest poprawny.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OOP -->
+<section id="oop">
+  <div class="container">
+    <div class="section-label">Teoria</div>
+    <div class="section-title">4 filary programowania obiektowego</div>
+    <p class="section-sub">Java jest językiem obiektowym — cały kod organizujesz wokół tych czterech zasad.</p>
+    <div class="cards-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+      <div class="card"><div class="card-icon">🔒</div><h4>Enkapsulacja</h4><p>Ukrywanie szczegółów klasy. Pola oznaczasz jako <code style="color:#f89820">private</code>, dostęp dajesz przez metody <code style="color:#f89820">getX()</code>/<code style="color:#f89820">setX()</code>. Na zewnątrz widać tylko to co potrzebne.</p></div>
+      <div class="card"><div class="card-icon">🧬</div><h4>Dziedziczenie</h4><p>Klasa może przejąć pola i metody innej klasy. Słowo kluczowe <code style="color:#f89820">extends</code>. Unikasz powtarzania kodu — wspólne rzeczy piszesz raz w klasie nadrzędnej.</p></div>
+      <div class="card"><div class="card-icon">🎭</div><h4>Polimorfizm</h4><p>Ten sam kod działa różnie w zależności od obiektu. Metoda może być nadpisana w podklasie i zachowywać się inaczej — bez zmiany reszty kodu.</p></div>
+      <div class="card"><div class="card-icon">🗂️</div><h4>Abstrakcja</h4><p>Pokazujesz tylko to co istotne, ukrywasz szczegóły. Interfejsy definiują <em>co</em> coś robi, bez opisywania <em>jak</em> — to ustala klasa która je implementuje.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPY DANYCH -->
+<section id="typy">
+  <div class="container">
+    <div class="section-label">Java — podstawy</div>
+    <div class="section-title">Typy danych i zmienne</div>
+    <p class="section-sub">W Javie każda zmienna musi mieć zadeklarowany typ. Kompilator sprawdza poprawność jeszcze przed uruchomieniem programu.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <p style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Typy prymitywne</p>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead><tr style="border-bottom:1px solid #1e2235;"><th style="text-align:left;padding:8px 12px;color:#555;font-weight:600;">Typ</th><th style="text-align:left;padding:8px 12px;color:#555;font-weight:600;">Co przechowuje</th><th style="text-align:left;padding:8px 12px;color:#555;font-weight:600;">Przykład</th></tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #1e2235;"><td style="padding:10px 12px;"><code style="color:#c792ea">int</code></td><td style="padding:10px 12px;color:#666;">Liczba całkowita</td><td style="padding:10px 12px;"><code style="color:#f78c6c">42</code></td></tr>
+            <tr style="border-bottom:1px solid #1e2235;"><td style="padding:10px 12px;"><code style="color:#c792ea">double</code></td><td style="padding:10px 12px;color:#666;">Liczba z przecinkiem</td><td style="padding:10px 12px;"><code style="color:#f78c6c">3.14</code></td></tr>
+            <tr style="border-bottom:1px solid #1e2235;"><td style="padding:10px 12px;"><code style="color:#c792ea">boolean</code></td><td style="padding:10px 12px;color:#666;">Prawda lub fałsz</td><td style="padding:10px 12px;"><code style="color:#f78c6c">true</code></td></tr>
+            <tr><td style="padding:10px 12px;"><code style="color:#c792ea">char</code></td><td style="padding:10px 12px;color:#666;">Jeden znak</td><td style="padding:10px 12px;"><code style="color:#c3e88d">'A'</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Typy obiektowe (klasy)</p>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead><tr style="border-bottom:1px solid #1e2235;"><th style="text-align:left;padding:8px 12px;color:#555;font-weight:600;">Typ</th><th style="text-align:left;padding:8px 12px;color:#555;font-weight:600;">Co przechowuje</th><th style="text-align:left;padding:8px 12px;color:#555;font-weight:600;">Przykład</th></tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #1e2235;"><td style="padding:10px 12px;"><code style="color:#82aaff">String</code></td><td style="padding:10px 12px;color:#666;">Tekst</td><td style="padding:10px 12px;"><code style="color:#c3e88d">"Cześć"</code></td></tr>
+            <tr style="border-bottom:1px solid #1e2235;"><td style="padding:10px 12px;"><code style="color:#82aaff">Integer</code></td><td style="padding:10px 12px;color:#666;">Liczba całkowita (obiekt)</td><td style="padding:10px 12px;"><code style="color:#f78c6c">Integer.MAX_VALUE</code></td></tr>
+            <tr style="border-bottom:1px solid #1e2235;"><td style="padding:10px 12px;"><code style="color:#82aaff">List&lt;T&gt;</code></td><td style="padding:10px 12px;color:#666;">Lista elementów</td><td style="padding:10px 12px;"><code style="color:#f78c6c">new ArrayList&lt;&gt;()</code></td></tr>
+            <tr><td style="padding:10px 12px;"><code style="color:#82aaff">String[]</code></td><td style="padding:10px 12px;color:#666;">Tablica Stringów</td><td style="padding:10px 12px;"><code style="color:#c3e88d">args[]</code> z main</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="code-wrap" style="margin-top:28px;">
+      <div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Zmienne.java</span></div>
+      <div class="code-block">
+<span class="kw">int</span> wiek = <span class="num-lit">21</span>;<br>
+<span class="kw">double</span> srednia = <span class="num-lit">4.5</span>;<br>
+<span class="kw">boolean</span> zdany = <span class="kw">true</span>;<br>
+<span class="cl">String</span> imie = <span class="str">"Bartosz"</span>;<br>
+<br>
+<span class="cm">// String to obiekt — ma metody</span><br>
+<span class="kw">int</span> dlugosc = imie.<span class="fn">length</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 7</span><br>
+<span class="cl">String</span> wielkie = imie.<span class="fn">toUpperCase</span>();&nbsp;<span class="cm">// "BARTOSZ"</span><br>
+<span class="kw">boolean</span> zawiera = imie.<span class="fn">contains</span>(<span class="str">"art"</span>); <span class="cm">// true</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KONTROLA PRZEPŁYWU -->
+<section id="kontrola">
+  <div class="container">
+    <div class="section-label">Java — podstawy</div>
+    <div class="section-title">Instrukcje sterujące</div>
+    <p class="section-sub">Jak sprawić żeby program podejmował decyzje i powtarzał działania.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Warunki — if / else</span></div>
+        <div class="code-block" style="font-size:13px;">
+<span class="kw">int</span> ocena = <span class="num-lit">4</span>;<br>
+<br>
+<span class="kw">if</span> (ocena >= <span class="num-lit">5</span>) {<br>
+&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Bardzo dobry"</span>);<br>
+} <span class="kw">else if</span> (ocena >= <span class="num-lit">3</span>) {<br>
+&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Dobry"</span>);<br>
+} <span class="kw">else</span> {<br>
+&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Niedostateczny"</span>);<br>
+}<br>
+<span class="cm">// wypisze: Dobry</span>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Pętla — for / while</span></div>
+        <div class="code-block" style="font-size:13px;">
+<span class="cm">// for — określona liczba razy</span><br>
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num-lit">0</span>; i &lt; <span class="num-lit">3</span>; i++) {<br>
+&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Krok: "</span> + i);<br>
+}<br>
+<span class="cm">// Krok: 0, Krok: 1, Krok: 2</span><br>
+<br>
+<span class="cm">// while — dopóki warunek prawdziwy</span><br>
+<span class="kw">int</span> n = <span class="num-lit">5</span>;<br>
+<span class="kw">while</span> (n > <span class="num-lit">0</span>) { n--; }
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Wyjątki — try / catch</span></div>
+        <div class="code-block" style="font-size:13px;">
+<span class="kw">try</span> {<br>
+&nbsp;&nbsp;<span class="cm">// kod który może się nie udać</span><br>
+&nbsp;&nbsp;<span class="cl">String</span> html = <span class="fn">pobierzStrone</span>(url);<br>
+} <span class="kw">catch</span> (<span class="cl">IOException</span> e) {<br>
+&nbsp;&nbsp;<span class="cm">// co zrobić gdy błąd</span><br>
+&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">RuntimeException</span>(e);<br>
+}<br>
+<br>
+<span class="cm">// RuntimeException zatrzymuje program</span><br>
+<span class="cm">// i wypisuje gdzie wystąpił błąd</span>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">args[] — argumenty programu</span></div>
+        <div class="code-block" style="font-size:13px;">
+<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br>
+&nbsp;&nbsp;<span class="cm">// args = tablica Stringów</span><br>
+&nbsp;&nbsp;<span class="cm">// args[0] = pierwszy argument</span><br>
+<br>
+&nbsp;&nbsp;<span class="cl">String</span> url = args[<span class="num-lit">0</span>];<br>
+&nbsp;&nbsp;<span class="cm">// gradlew run --args="http://x.com"</span><br>
+&nbsp;&nbsp;<span class="cm">// → args[0] = "http://x.com"</span><br>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTELLIJ -->
+<section id="intellij">
+  <div class="container">
+    <div class="section-label">Narzędzia</div>
+    <div class="section-title">IntelliJ IDEA — skróty klawiszowe</div>
+    <p class="section-sub">Kilka skrótów które zaoszczędzą Ci masy czasu podczas pisania kodu.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <p style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1e2235;">Pisanie kodu</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Automatyczne uzupełnianie</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Ctrl + Space</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Importuj brakujące klasy</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Alt + Enter</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Formatuj kod (wcięcia)</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Ctrl + Alt + L</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Duplikuj linię</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Ctrl + D</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Usuń linię</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Ctrl + Y</code></div>
+        </div>
+      </div>
+      <div>
+        <p style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1e2235;">Nawigacja i uruchamianie</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Szukaj pliku</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Shift + Shift</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Przejdź do definicji klasy</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Ctrl + Click</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Uruchom projekt</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Shift + F10</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Cofnij zmianę</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Ctrl + Z</code></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0f1220;border-radius:8px;border:1px solid #1e2235;"><span style="font-size:14px;color:#aaa;">Otwórz terminal w IntelliJ</span><code style="background:#1a1d2e;color:#f89820;padding:3px 10px;border-radius:6px;font-size:12px;">Alt + F12</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BŁĘDY -->
+<section id="bledy">
+  <div class="container">
+    <div class="section-label">Debugowanie</div>
+    <div class="section-title">Najczęstsze błędy i co oznaczają</div>
+    <p class="section-sub">Java mówi Ci dokładnie co poszło nie tak — musisz tylko wiedzieć jak czytać te komunikaty.</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#0f1220;border:1px solid #1e2235;border-left:3px solid #e57373;border-radius:10px;padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><code style="color:#e57373;font-size:14px;font-weight:700;">NullPointerException</code><span style="background:rgba(229,115,115,0.1);color:#e57373;font-size:11px;padding:2px 8px;border-radius:4px;">Bardzo częsty</span></div>
+        <p style="color:#666;font-size:14px;line-height:1.6;">Próbujesz użyć zmiennej która ma wartość <code style="color:#f89820">null</code> — nie wskazuje na żaden obiekt. Sprawdź czy obiekt na pewno został stworzony przez <code>new</code> zanim go użyjesz.</p>
+      </div>
+      <div style="background:#0f1220;border:1px solid #1e2235;border-left:3px solid #e57373;border-radius:10px;padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><code style="color:#e57373;font-size:14px;font-weight:700;">ArrayIndexOutOfBoundsException</code></div>
+        <p style="color:#666;font-size:14px;line-height:1.6;">Próbujesz odczytać element tablicy pod indeksem który nie istnieje. W projekcie: jeśli zapomnisz podać <code>--args</code> przy uruchomieniu, <code>args[0]</code> wyrzuci ten błąd.</p>
+      </div>
+      <div style="background:#0f1220;border:1px solid #1e2235;border-left:3px solid #febc2e;border-radius:10px;padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><code style="color:#febc2e;font-size:14px;font-weight:700;">cannot find symbol</code><span style="background:rgba(254,188,46,0.1);color:#febc2e;font-size:11px;padding:2px 8px;border-radius:4px;">Kompilacja</span></div>
+        <p style="color:#666;font-size:14px;line-height:1.6;">Java nie może znaleźć klasy lub metody. Najczęstsze przyczyny: literówka w nazwie, brakujący <code>import</code>, lub klasa jest w złym pakiecie.</p>
+      </div>
+      <div style="background:#0f1220;border:1px solid #1e2235;border-left:3px solid #febc2e;border-radius:10px;padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><code style="color:#febc2e;font-size:14px;font-weight:700;">BUILD FAILED</code><span style="background:rgba(254,188,46,0.1);color:#febc2e;font-size:11px;padding:2px 8px;border-radius:4px;">Gradle</span></div>
+        <p style="color:#666;font-size:14px;line-height:1.6;">Gradle nie mógł zbudować projektu. Czytaj linię <code style="color:#e57373;">&gt; What went wrong:</code> — tam jest konkretna przyczyna. Najczęściej błąd kompilacji lub brak internetu przy pobieraniu bibliotek.</p>
+      </div>
+      <div style="background:#0f1220;border:1px solid #1e2235;border-left:3px solid #82aaff;border-radius:10px;padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><code style="color:#82aaff;font-size:14px;font-weight:700;">SSLHandshakeException</code><span style="background:rgba(130,170,255,0.1);color:#82aaff;font-size:11px;padding:2px 8px;border-radius:4px;">Sieć</span></div>
+        <p style="color:#666;font-size:14px;line-height:1.6;">Strona którą próbujesz pobrać ma nieważny certyfikat HTTPS. Java odmawia połączenia dla bezpieczeństwa. To nie błąd w Twoim kodzie — użyj <code>http://example.com</code> do testów.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo" style="font-size:18px; cursor:default;">☕ <span style="color:#fff">JavaMaster</span></div>
+      <p>Materiały do kursu Programowania Obiektowego.  — projekty wielomodułowe z Gradle.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Sekcje</h5>
+      <a href="#program">Program kursu</a>
+      <a href="#java">Podstawy Javy</a>
+      <a href="#gradle">Gradle</a>
+      <a href="#projekt">Architektura</a>
+    </div>
+    <div class="footer-col">
+      <h5>Technologie</h5>
+      <a href="#">Java 17</a>
+      <a href="#">Gradle 9</a>
+      <a href="#">jsoup 1.14</a>
+      <a href="#">IntelliJ IDEA</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>Programowanie Obiektowe · 2025</p>
+    <p style="color:#222;">mgr inż. Bogdan Gulowaty</p>
+  </div>
+</footer>
+
+<script>
+  // FAQ toggle
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+</script>
+
+<!-- EASTER EGG DOTS -->
+<div class="egg-counter">
+  <div class="egg-dot" id="d1"></div>
+  <div class="egg-dot" id="d2"></div>
+  <div class="egg-dot" id="d3"></div>
+  <div class="egg-dot" id="d4"></div>
+  <div class="egg-dot" id="d5"></div>
+</div>
+
+<!-- MODAL — UKRYTE ROZWIĄZANIE -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>🔓 Jak zrobić ten projekt — dla każdego</h2>
+    <p class="subtitle">Znalazłeś easter egga! Czytaj powoli, krok po kroku. Każdy krok to jedna czynność.</p>
+
+    <!-- ===== CZĘŚĆ 1 ===== -->
+    <div style="background:#111827; border:1px solid #f89820; border-radius:10px; padding:16px 20px; margin-bottom:28px;">
+      <p style="color:#f89820; font-weight:800; font-size:15px; margin:0;">📦 CZĘŚĆ 1 — Tworzenie projektu od zera</p>
+      <p style="color:#888; font-size:13px; margin:4px 0 0;">Jak stworzyć foldery w terminalu, otworzyć projekt w IntelliJ i stworzyć pliki.</p>
+    </div>
+
+    <!-- KROK 1 -->
+    <div class="modal-step">
+      <h4><span class="num">1</span> Otwórz terminal (czarne okno)</h4>
+      <p>Naciśnij jednocześnie <strong style="color:#fff">Windows + R</strong>, wpisz <code>cmd</code>, kliknij <strong style="color:#fff">OK</strong>.<br>
+      Otworzy się czarne okno — to terminal.</p>
+    </div>
+
+    <!-- KROK 2 -->
+    <div class="modal-step">
+      <h4><span class="num">2</span> Stwórz wszystkie foldery</h4>
+      <p>Wpisz każdą linię i naciśnij <strong style="color:#fff">Enter</strong> po każdej:</p>
+      <div class="code-block">
+cd %USERPROFILE%\Desktop<br>
+mkdir lab4<br>
+mkdir lab4\html-remover<br>
+mkdir lab4\html-removing-application<br>
+mkdir lab4\html-remover\src\main\java\pl\edu\twoj\pakiet<br>
+mkdir lab4\html-removing-application\src\main\java\pl\edu\twoj\pakiet
+      </div>
+      <p>Na Pulpicie pojawi się folder <strong style="color:#fff">lab4</strong> z całą strukturą w środku.</p>
+    </div>
+
+    <!-- KROK 3 -->
+    <div class="modal-step">
+      <h4><span class="num">3</span> Otwórz IntelliJ IDEA</h4>
+      <p>Uruchom <strong style="color:#fff">IntelliJ IDEA</strong>. Na ekranie startowym kliknij:<br><br>
+      <strong style="color:#fff">Open</strong> (lub "Open or Import")<br><br>
+      Przejdź do <strong style="color:#fff">Pulpitu</strong>, kliknij folder <strong style="color:#fff">lab4</strong>, kliknij <strong style="color:#fff">OK</strong>.<br><br>
+      IntelliJ zapyta czy "Trust the project" — kliknij <strong style="color:#fff">Trust Project</strong>.<br><br>
+      Po lewej stronie zobaczysz drzewo folderów projektu.</p>
+    </div>
+
+    <!-- KROK 4 -->
+    <div class="modal-step">
+      <h4><span class="num">4</span> Jak tworzyć nowy plik w IntelliJ</h4>
+      <p>Każdy plik tworzysz tak samo:<br><br>
+      1. Po lewej stronie znajdź folder w którym ma być plik<br>
+      2. Kliknij na ten folder <strong style="color:#fff">prawym przyciskiem myszy</strong><br>
+      3. Wybierz <strong style="color:#fff">New → File</strong><br>
+      4. Wpisz nazwę pliku (np. <code>settings.gradle</code>) i naciśnij <strong style="color:#fff">Enter</strong><br>
+      5. Plik otworzy się — wklej do niego kod i naciśnij <strong style="color:#fff">Ctrl+S</strong> żeby zapisać</p>
+
+      <p style="margin-top:16px;">Tak powinna wyglądać struktura plików po lewej stronie w IntelliJ gdy wszystko jest gotowe:</p>
+      <div class="code-block" style="line-height:1.9; font-size:13px;">
+        <span style="color:#f89820;">📁 lab4</span><br>
+        &nbsp;├── <span style="color:#c3e88d;">📄 build.gradle</span><br>
+        &nbsp;├── <span style="color:#c3e88d;">📄 settings.gradle</span><br>
+        &nbsp;├── <span style="color:#82aaff;">📁 html-remover</span><br>
+        &nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color:#c3e88d;">📄 build.gradle</span><br>
+        &nbsp;│&nbsp;&nbsp;&nbsp;└── <span style="color:#82aaff;">📁 src / main / java / pl / edu / twoj / pakiet</span><br>
+        &nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span style="color:#c3e88d;">📄 StringHtmlCleaner.java</span><br>
+        &nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color:#c3e88d;">📄 PageDownloadingUtility.java</span><br>
+        &nbsp;└── <span style="color:#82aaff;">📁 html-removing-application</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span style="color:#c3e88d;">📄 build.gradle</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color:#82aaff;">📁 src / main / java / pl / edu / twoj / pakiet</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color:#c3e88d;">📄 Application.java</span>
+      </div>
+      <p style="color:#888; font-size:13px; margin-top:10px;">
+        🟡 Żółty = główny folder projektu &nbsp;|&nbsp;
+        🔵 Niebieski = foldery &nbsp;|&nbsp;
+        🟢 Zielony = pliki które musisz stworzyć
+      </p>
+    </div>
+
+    <!-- KROK 5 -->
+    <div class="modal-step">
+      <h4><span class="num">5</span> Stwórz plik: settings.gradle</h4>
+      <p>Prawym na folder <strong style="color:#fff">lab4</strong> → New → File → wpisz <code>settings.gradle</code> → Enter.<br>
+      Wklej kod i naciśnij <strong style="color:#fff">Ctrl+S</strong>:</p>
+      <span class="file-label">📄 lab4 \ settings.gradle</span>
+      <div class="code-block">
+rootProject.name = <span class="str">'lab4'</span><br>
+<br>
+include <span class="str">'html-remover'</span><br>
+include <span class="str">'html-removing-application'</span>
+      </div>
+    </div>
+
+    <!-- KROK 6 -->
+    <div class="modal-step">
+      <h4><span class="num">6</span> Stwórz plik: build.gradle (w głównym folderze lab4)</h4>
+      <p>Prawym na <strong style="color:#fff">lab4</strong> → New → File → <code>build.gradle</code> → Enter.<br>
+      Zostaw plik <strong style="color:#fff">pusty</strong> i naciśnij <strong style="color:#fff">Ctrl+S</strong>.</p>
+      <span class="file-label">📄 lab4 \ build.gradle</span>
+      <p style="color:#888; font-size:13px;">Ten plik musi istnieć, ale może być pusty.</p>
+    </div>
+
+    <!-- KROK 7 -->
+    <div class="modal-step">
+      <h4><span class="num">7</span> Stwórz plik: build.gradle w html-remover</h4>
+      <p>Prawym na folder <strong style="color:#fff">html-remover</strong> → New → File → <code>build.gradle</code> → Enter.<br>Wklej i Ctrl+S:</p>
+      <span class="file-label">📄 lab4 \ html-remover \ build.gradle</span>
+      <div class="code-block">
+<span class="fn">plugins</span> {<br>
+&nbsp;&nbsp;id <span class="str">'java-library'</span><br>
+}<br>
+<br>
+<span class="fn">repositories</span> {<br>
+&nbsp;&nbsp;<span class="fn">mavenCentral</span>()<br>
+}<br>
+<br>
+<span class="fn">dependencies</span> {<br>
+&nbsp;&nbsp;implementation <span class="str">'org.jsoup:jsoup:1.14.3'</span><br>
+}
+      </div>
+    </div>
+
+    <!-- PACKAGE INFO -->
+    <div style="background:#0a0c14; border:1px solid #f89820; border-radius:10px; padding:18px 20px; margin-bottom:24px;">
+      <p style="color:#f89820; font-weight:800; font-size:14px; margin-bottom:10px;">📦 Skąd pochodzi nazwa <code>pl.edu.twoj.pakiet</code>?</p>
+      <p style="color:#aaa; font-size:14px; line-height:1.7; margin-bottom:10px;">
+        Pierwsza linia każdego pliku Java to <code style="color:#c792ea">package</code> — mówi Javie gdzie logicznie leży dana klasa.<br><br>
+        Nazwa pakietu <strong style="color:#fff">musi dokładnie odpowiadać strukturze folderów</strong> w których leży plik.<br><br>
+        Foldery które stworzyłeś: <code style="color:#c3e88d">src/main/java/<strong>pl/edu/twoj/pakiet</strong></code><br>
+        Nazwa pakietu:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code style="color:#c3e88d"><strong>pl.edu.twoj.pakiet</strong></code><br><br>
+        Slash <code>/</code> w folderach = kropka <code>.</code> w nazwie pakietu. To ta sama rzecz.
+      </p>
+      <p style="color:#aaa; font-size:14px; line-height:1.7; margin-bottom:10px;">
+        Możesz użyć <strong style="color:#fff">dowolnej nazwy</strong> — np. <code style="color:#c3e88d">pl.edu.pwr.lab4</code> albo <code style="color:#c3e88d">com.mojafirma.app</code>.<br>
+        Ważne żeby foldery i <code>package</code> w kodzie były <strong style="color:#fff">identyczne</strong>.
+      </p>
+      <p style="color:#666; font-size:13px;">Konwencja w Polsce: <code>pl</code> = kraj, <code>edu</code> = edukacja, potem nazwa uczelni/projektu/twoja. W zadaniu prowadzący zaproponował <code>pl.edu.twoj.pakiet</code> — możesz zostawić tę nazwę bez zmian.</p>
+    </div>
+
+    <!-- KROK 8 -->
+    <div class="modal-step">
+      <h4><span class="num">8</span> Stwórz plik: StringHtmlCleaner.java</h4>
+      <p>Rozwiń po lewej: <strong style="color:#fff">html-remover → src → main → java → pl → edu → twoj → pakiet</strong><br>
+      Prawym na folder <strong style="color:#fff">pakiet</strong> → New → File → <code>StringHtmlCleaner.java</code> → Enter.<br>Wklej i Ctrl+S:</p>
+      <span class="file-label">📄 pakiet \ StringHtmlCleaner.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<span class="kw">import</span> org.jsoup.Jsoup;<br>
+<span class="kw">import</span> org.jsoup.nodes.Document;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">StringHtmlCleaner</span> {<br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">String</span> <span class="fn">clean</span>(<span class="cl">String</span> textToClean) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Document</span> document = <span class="cl">Jsoup</span>.<span class="fn">parse</span>(textToClean);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> document.<span class="fn">text</span>();<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- KROK 10 -->
+    <div class="modal-step">
+      <h4><span class="num">10</span> Stwórz plik: PageDownloadingUtility.java</h4>
+      <p>Zapisz do tego samego folderu co wyżej, jako <code>PageDownloadingUtility.java</code>:</p>
+      <span class="file-label">📄 ...pakiet \ PageDownloadingUtility.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<span class="kw">import</span> org.jsoup.Jsoup;<br>
+<span class="kw">import</span> java.io.IOException;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">PageDownloadingUtility</span> {<br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="fn">PageDownloadingUtility</span>() { }<br>
+<br>
+&nbsp;&nbsp;<span class="kw">public static</span> <span class="cl">String</span> <span class="fn">download</span>(<span class="cl">String</span> url) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="cl">Jsoup</span>.<span class="fn">connect</span>(url).<span class="fn">get</span>().<span class="fn">html</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="kw">catch</span> (<span class="cl">IOException</span> e) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">RuntimeException</span>(e);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- KROK 10 -->
+    <div class="modal-step">
+      <h4><span class="num">10</span> Stwórz plik: PageDownloadingUtility.java</h4>
+      <p>Prawym na folder <strong style="color:#fff">pakiet</strong> w module html-remover → New → File → <code>PageDownloadingUtility.java</code> → Enter.<br>Wklej i Ctrl+S:</p>
+      <span class="file-label">📄 pakiet \ PageDownloadingUtility.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<span class="kw">import</span> org.jsoup.Jsoup;<br>
+<span class="kw">import</span> java.io.IOException;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">PageDownloadingUtility</span> {<br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="fn">PageDownloadingUtility</span>() { }<br>
+<br>
+&nbsp;&nbsp;<span class="kw">public static</span> <span class="cl">String</span> <span class="fn">download</span>(<span class="cl">String</span> url) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="cl">Jsoup</span>.<span class="fn">connect</span>(url).<span class="fn">get</span>().<span class="fn">html</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="kw">catch</span> (<span class="cl">IOException</span> e) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">RuntimeException</span>(e);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- KROK 11 -->
+    <div class="modal-step">
+      <h4><span class="num">11</span> Stwórz plik: build.gradle w html-removing-application</h4>
+      <p>Prawym na folder <strong style="color:#fff">html-removing-application</strong> → New → File → <code>build.gradle</code> → Enter.<br>Wklej i Ctrl+S:</p>
+      <span class="file-label">📄 lab4 \ html-removing-application \ build.gradle</span>
+      <div class="code-block">
+<span class="fn">plugins</span> {<br>
+&nbsp;&nbsp;id <span class="str">'application'</span><br>
+}<br>
+<br>
+<span class="fn">repositories</span> {<br>
+&nbsp;&nbsp;<span class="fn">mavenCentral</span>()<br>
+}<br>
+<br>
+<span class="fn">dependencies</span> {<br>
+&nbsp;&nbsp;implementation project(<span class="str">':html-remover'</span>)<br>
+}<br>
+<br>
+<span class="fn">application</span> {<br>
+&nbsp;&nbsp;mainClass = <span class="str">'pl.edu.twoj.pakiet.Application'</span><br>
+}<br>
+<br>
+<span class="fn">run</span> {<br>
+&nbsp;&nbsp;<span class="fn">doFirst</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;println <span class="str">"Uruchamiam aplikację z argumentami ${args}"</span><br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- KROK 12 -->
+    <div class="modal-step">
+      <h4><span class="num">12</span> Stwórz plik: Application.java</h4>
+      <p>Rozwiń po lewej: <strong style="color:#fff">html-removing-application → src → main → java → pl → edu → twoj → pakiet</strong><br>
+      Prawym na folder <strong style="color:#fff">pakiet</strong> → New → File → <code>Application.java</code> → Enter.<br>Wklej i Ctrl+S:</p>
+      <span class="file-label">📄 ...pakiet \ Application.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">Application</span> {<br>
+&nbsp;&nbsp;<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> url = args[0];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> html = <span class="cl">PageDownloadingUtility</span>.<span class="fn">download</span>(url);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">StringHtmlCleaner</span> cleaner = <span class="kw">new</span> <span class="cl">StringHtmlCleaner</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> clean = cleaner.<span class="fn">clean</span>(html);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(clean);<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+
+    <!-- ===== CZĘŚĆ 2 ===== -->
+    <div style="border-top: 1px solid #2a2d3e; margin: 32px 0 28px;"></div>
+    <div style="background:#111827; border:1px solid #4caf50; border-radius:10px; padding:16px 20px; margin-bottom:28px;">
+      <p style="color:#4caf50; font-weight:800; font-size:15px; margin:0;">▶️ CZĘŚĆ 2 — Uruchamianie projektu</p>
+      <p style="color:#888; font-size:13px; margin:4px 0 0;">Gdy masz już wszystkie pliki — jak to odpalić.</p>
+    </div>
+
+    <!-- KROK 14 -->
+    <div class="modal-step">
+      <h4><span class="num">14</span> Zbuduj projekt</h4>
+      <p>W terminalu, będąc w folderze <code>lab4</code>, wpisz:</p>
+      <div class="code-block">gradlew build</div>
+      <p>Poczekaj — komputer pobiera biblioteki i kompiluje kod. Na końcu zobaczysz:</p>
+      <div class="code-block" style="color:#4caf50">BUILD SUCCESSFUL</div>
+    </div>
+
+    <!-- KROK 15 -->
+    <div class="modal-step">
+      <h4><span class="num">15</span> Uruchom aplikację</h4>
+      <p>Wpisz i naciśnij <strong style="color:#fff">Enter</strong>:</p>
+      <div class="code-block">gradlew :html-removing-application:run --args="http://example.com"</div>
+      <p>Zobaczysz tekst ze strony example.com bez tagów HTML:</p>
+      <div class="code-block" style="color:#aaa">
+        Uruchamiam aplikację z argumentami [http://example.com]<br>
+        Example Domain This domain is for use in illustrative examples...<br>
+        <span style="color:#4caf50">BUILD SUCCESSFUL</span>
+      </div>
+      <p>Możesz zmienić <code>http://example.com</code> na dowolny inny adres strony.</p>
+    </div>
+
+    <!-- ===== CZĘŚĆ 3 ===== -->
+    <div style="border-top: 1px solid #2a2d3e; margin: 32px 0 28px;"></div>
+    <div style="background:#111827; border:1px solid #82aaff; border-radius:10px; padding:16px 20px; margin-bottom:28px;">
+      <p style="color:#82aaff; font-weight:800; font-size:15px; margin:0;">📖 CZĘŚĆ 3 — Co robi każdy plik i dlaczego</p>
+      <p style="color:#888; font-size:13px; margin:4px 0 0;">Wyjaśnienie każdej linii kodu prostymi słowami.</p>
+    </div>
+
+    <!-- SEPARATOR -->
+    <p style="color:#f89820; font-weight:700; font-size:15px; margin-bottom:20px;">📁 Co jest w każdym pliku i dlaczego</p>
+
+    <!-- PLIK 1 -->
+    <div class="modal-step">
+      <h4><span class="num">A</span> settings.gradle — lista modułów projektu</h4>
+      <p>Ten plik to spis treści całego projektu. Bez niego Gradle nie wie że w środku są dwa moduły.</p>
+      <span class="file-label">lab4 / settings.gradle</span>
+      <div class="code-block">
+rootProject.name = <span class="str">'lab4'</span><br>
+include <span class="str">'html-remover'</span><br>
+include <span class="str">'html-removing-application'</span>
+      </div>
+    </div>
+
+    <!-- PLIK 2 -->
+    <div class="modal-step">
+      <h4><span class="num">B</span> build.gradle w html-remover — konfiguracja biblioteki</h4>
+      <p>
+        Mówi Gradle że ten moduł to <strong style="color:#fff">biblioteka</strong> (java-library) i że używa zewnętrznej biblioteki jsoup do obsługi HTML.
+        Gradle sam pobierze jsoup z internetu.
+      </p>
+      <span class="file-label">lab4 / html-remover / build.gradle</span>
+      <div class="code-block">
+<span class="fn">plugins</span> {<br>
+&nbsp;&nbsp;id <span class="str">'java-library'</span>&nbsp;&nbsp;<span class="cm">// to jest biblioteka, nie aplikacja</span><br>
+}<br>
+<span class="fn">repositories</span> { <span class="fn">mavenCentral</span>() }<br>
+<span class="fn">dependencies</span> {<br>
+&nbsp;&nbsp;implementation <span class="str">'org.jsoup:jsoup:1.14.3'</span>&nbsp;&nbsp;<span class="cm">// pobierz tę bibliotekę</span><br>
+}
+      </div>
+    </div>
+
+    <!-- PLIK 3 -->
+    <div class="modal-step">
+      <h4><span class="num">C</span> StringHtmlCleaner.java — usuwa tagi HTML</h4>
+      <p>
+        Dostaje tekst pełen znaczników HTML jak <code>&lt;h1&gt;Tytuł&lt;/h1&gt;</code>
+        i zwraca tylko czysty tekst: <code>Tytuł</code>.
+        Robi to za pomocą biblioteki jsoup.
+      </p>
+      <span class="file-label">html-remover / src / main / java / pl / edu / twoj / pakiet / StringHtmlCleaner.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<span class="kw">import</span> org.jsoup.Jsoup;<br>
+<span class="kw">import</span> org.jsoup.nodes.Document;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">StringHtmlCleaner</span> {<br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">String</span> <span class="fn">clean</span>(<span class="cl">String</span> textToClean) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Document</span> document = <span class="cl">Jsoup</span>.<span class="fn">parse</span>(textToClean);&nbsp;&nbsp;<span class="cm">// czyta HTML</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> document.<span class="fn">text</span>();&nbsp;&nbsp;<span class="cm">// zwraca sam tekst</span><br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- PLIK 4 -->
+    <div class="modal-step">
+      <h4><span class="num">D</span> PageDownloadingUtility.java — pobiera stronę z internetu</h4>
+      <p>
+        Dostaje adres strony (np. <code>http://example.com</code>) i zwraca cały jej kod HTML jako tekst.
+        Konstruktor jest prywatny — to znaczy że tej klasy się nie tworzy przez <code>new</code>,
+        tylko od razu wywołujesz jej metodę: <code>PageDownloadingUtility.download(url)</code>.
+      </p>
+      <span class="file-label">html-remover / src / main / java / pl / edu / twoj / pakiet / PageDownloadingUtility.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<span class="kw">import</span> org.jsoup.Jsoup;<br>
+<span class="kw">import</span> java.io.IOException;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">PageDownloadingUtility</span> {<br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="fn">PageDownloadingUtility</span>() { }&nbsp;&nbsp;<span class="cm">// nie można robić "new"</span><br>
+<br>
+&nbsp;&nbsp;<span class="kw">public static</span> <span class="cl">String</span> <span class="fn">download</span>(<span class="cl">String</span> url) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="cl">Jsoup</span>.<span class="fn">connect</span>(url).<span class="fn">get</span>().<span class="fn">html</span>();&nbsp;&nbsp;<span class="cm">// idź pod adres i pobierz HTML</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="kw">catch</span> (<span class="cl">IOException</span> e) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">RuntimeException</span>(e);&nbsp;&nbsp;<span class="cm">// jeśli błąd — zgłoś go dalej</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- PLIK 5 -->
+    <div class="modal-step">
+      <h4><span class="num">E</span> build.gradle w html-removing-application — konfiguracja aplikacji</h4>
+      <p>
+        Mówi Gradle że to <strong style="color:#fff">aplikacja</strong> (ma metodę main).
+        Używa modułu html-remover jako biblioteki.
+        Zadanie dodatkowe: <code>doFirst</code> wypisuje argumenty <strong style="color:#fff">przed</strong> uruchomieniem programu.
+      </p>
+      <span class="file-label">lab4 / html-removing-application / build.gradle</span>
+      <div class="code-block">
+<span class="fn">plugins</span> { id <span class="str">'application'</span> }&nbsp;&nbsp;<span class="cm">// to jest aplikacja</span><br>
+<span class="fn">repositories</span> { <span class="fn">mavenCentral</span>() }<br>
+<span class="fn">dependencies</span> {<br>
+&nbsp;&nbsp;implementation project(<span class="str">':html-remover'</span>)&nbsp;&nbsp;<span class="cm">// użyj modułu obok</span><br>
+}<br>
+<span class="fn">application</span> {<br>
+&nbsp;&nbsp;mainClass = <span class="str">'pl.edu.twoj.pakiet.Application'</span>&nbsp;&nbsp;<span class="cm">// tutaj jest main()</span><br>
+}<br>
+<span class="fn">run</span> {<br>
+&nbsp;&nbsp;<span class="fn">doFirst</span> {&nbsp;&nbsp;<span class="cm">// wykonaj TO zanim odpali się program</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;println <span class="str">"Uruchamiam aplikację z argumentami ${args}"</span><br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <!-- PLIK 6 -->
+    <div class="modal-step">
+      <h4><span class="num">F</span> Application.java — główna klasa, serce programu</h4>
+      <p>
+        To jest punkt startowy całej aplikacji. Java zawsze zaczyna od metody <code>main</code>.
+        Program bierze adres strony z argumentu (tego co wpiszesz po <code>--args=</code>),
+        pobiera stronę, czyści ją z tagów i wypisuje tekst na ekran.
+      </p>
+      <span class="file-label">html-removing-application / src / main / java / pl / edu / twoj / pakiet / Application.java</span>
+      <div class="code-block">
+<span class="kw">package</span> pl.edu.twoj.pakiet;<br>
+<br>
+<span class="kw">public class</span> <span class="cl">Application</span> {<br>
+&nbsp;&nbsp;<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> url = args[0];&nbsp;&nbsp;<span class="cm">// weź pierwszy argument — adres strony</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> html = <span class="cl">PageDownloadingUtility</span>.<span class="fn">download</span>(url);&nbsp;&nbsp;<span class="cm">// pobierz stronę</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">StringHtmlCleaner</span> cleaner = <span class="kw">new</span> <span class="cl">StringHtmlCleaner</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> clean = cleaner.<span class="fn">clean</span>(html);&nbsp;&nbsp;<span class="cm">// usuń tagi HTML</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(clean);&nbsp;&nbsp;<span class="cm">// wypisz na ekran</span><br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let clicks = 0;
+  const dots = [
+    document.getElementById('d1'),
+    document.getElementById('d2'),
+    document.getElementById('d3'),
+    document.getElementById('d4'),
+    document.getElementById('d5'),
+  ];
+
+  document.getElementById('logo').addEventListener('click', () => {
+    if (clicks < 5) {
+      dots[clicks].classList.add('active');
+      clicks++;
+    }
+    if (clicks === 5) {
+      setTimeout(() => openModal(), 300);
+    }
+  });
+
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    // reset
+    clicks = 0;
+    dots.forEach(d => d.classList.remove('active'));
+  }
+
+  // zamknij klikając poza modalem
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+</body>
+</html>
