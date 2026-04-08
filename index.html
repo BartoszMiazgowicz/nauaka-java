@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JavaLab — Pliki, ArrayList i JUnit</title>
+  <title>JavaLab — Generics, Lambdy i Stream API</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', sans-serif; background: #0a0c14; color: #e0e0e0; }
@@ -160,11 +160,10 @@
   <div class="logo" id="logo">☕ <span>JavaLab</span></div>
   <div class="nav-divider"></div>
   <div class="nav-links">
-    <a href="index.html">Gradle</a>
-    <a href="#arraylist">ArrayList</a>
-    <a href="#io">Pliki I/O</a>
-    <a href="#junit">JUnit</a>
-    <a href="#testy">Przypadki</a>
+    <a href="#generics">Generics</a>
+    <a href="#lambdy">Lambdy</a>
+    <a href="#streams">Streams</a>
+    <a href="#optional">Optional</a>
     <a href="#faq">FAQ</a>
   </div>
   <div class="nav-right">
@@ -174,25 +173,25 @@
 
 <div class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-tag">☕ Pliki · Kolekcje · Testowanie</div>
-  <h1>Pliki, <span>ArrayList</span><br>i <span>JUnit</span> w Javie</h1>
-  <p>Jak czytać i zapisywać pliki, pracować z dynamicznymi tablicami 2D oraz pisać testy jednostkowe które sprawdzają każdy przypadek.</p>
+  <div class="hero-tag">☕ Generics · Lambdy · Stream API</div>
+  <h1>Zaawansowane<br>mechanizmy <span>Javy</span></h1>
+  <p>Typy generyczne, wyrażenia lambda, Stream API i Optional — nowoczesne narzędzia które sprawiają że kod jest krótszy, bezpieczniejszy i bardziej czytelny.</p>
   <div class="hero-buttons">
-    <a href="#arraylist" class="btn-primary">Zacznij</a>
-    <a href="#junit" class="btn-secondary">Przejdź do JUnit</a>
+    <a href="#generics" class="btn-primary">Zacznij</a>
+    <a href="#streams" class="btn-secondary">Stream API</a>
   </div>
   <div class="hero-stats">
     <div class="hero-stat">
-      <div class="num">3<span></span></div>
+      <div class="num">4<span></span></div>
       <div class="lbl">Tematy</div>
     </div>
     <div class="hero-stat">
-      <div class="num">6<span></span></div>
+      <div class="num">8<span></span></div>
       <div class="lbl">Przykłady kodu</div>
     </div>
     <div class="hero-stat">
-      <div class="num">6<span></span></div>
-      <div class="lbl">Przypadki testowe</div>
+      <div class="num">Java<span></span></div>
+      <div class="lbl">17 LTS</div>
     </div>
     <div class="hero-stat">
       <div class="num">0<span></span></div>
@@ -202,13 +201,12 @@
 </div>
 
 <div class="trust-bar">
-  <span>Technologie:</span>
-  <strong>Java 17</strong> ·
-  <strong>Gradle 8+</strong> ·
-  <strong>JUnit Jupiter 5.10</strong> ·
-  <strong>java.util.ArrayList</strong> ·
-  <strong>java.io.Scanner</strong> ·
-  <strong>java.io.PrintWriter</strong>
+  <span>Omawiane API:</span>
+  <strong>java.util.function</strong> ·
+  <strong>java.util.stream</strong> ·
+  <strong>java.util.Optional</strong> ·
+  <strong>Generics &amp; Wildcards</strong> ·
+  <strong>Method References</strong>
 </div>
 
 <!-- CO SIĘ NAUCZYSZ -->
@@ -218,15 +216,15 @@
       <div>
         <div class="section-label">Zakres</div>
         <div class="section-title">Co obejmuje ten dział</div>
-        <p class="section-sub">Trzy niezależne tematy, które razem tworzą pełny obraz pracy z danymi i testami.</p>
+        <p class="section-sub">Cztery niezależne tematy z nowoczesnej Javy, które razem tworzą solidny fundament pod czyste i typowo-bezpieczne programowanie.</p>
         <ul class="checklist">
-          <li>Dynamiczne struktury danych — <code style="color:#f89820">ArrayList&lt;ArrayList&lt;Integer&gt;&gt;</code></li>
-          <li>Czytanie pliku wiersz po wierszu — <code style="color:#f89820">Scanner</code></li>
-          <li>Zapis wyników do pliku — <code style="color:#f89820">PrintWriter + FileWriter</code></li>
-          <li>Obsługa wyjątków przy pracy z plikami</li>
-          <li>Testy jednostkowe JUnit 5 — adnotacja <code style="color:#f89820">@Test</code></li>
-          <li>Testowanie przypadków brzegowych — pusta lista, nieskończoność</li>
-          <li>Konfiguracja JUnit w <code style="color:#f89820">build.gradle</code></li>
+          <li>Typy generyczne — parametry typów, ograniczenia <code style="color:#f89820">&lt;T extends Comparable&gt;</code></li>
+          <li>Wildcardy — <code style="color:#f89820">? extends T</code> i <code style="color:#f89820">? super T</code></li>
+          <li>Interfejsy funkcyjne — <code style="color:#f89820">Function</code>, <code style="color:#f89820">Predicate</code>, <code style="color:#f89820">Consumer</code></li>
+          <li>Wyrażenia lambda i referencje do metod</li>
+          <li>Stream API — <code style="color:#f89820">filter</code>, <code style="color:#f89820">map</code>, <code style="color:#f89820">collect</code>, <code style="color:#f89820">reduce</code></li>
+          <li>Optional — unikanie <code style="color:#f89820">NullPointerException</code></li>
+          <li>var — lokalne wnioskowanie typów (Java 10+)</li>
         </ul>
       </div>
       <div>
@@ -235,28 +233,28 @@
         <div class="curriculum">
           <div class="lesson done">
             <div class="lesson-num">1</div>
-            <div class="lesson-title">ArrayList — dynamiczne listy i zagnieżdżanie</div>
+            <div class="lesson-title">Generics — klasy i metody generyczne</div>
             <span class="lesson-tag tag-java">Java</span>
           </div>
           <div class="lesson done">
             <div class="lesson-num">2</div>
-            <div class="lesson-title">Pliki I/O — czytanie i zapis danych tekstowych</div>
-            <span class="lesson-tag tag-io">I/O</span>
+            <div class="lesson-title">Interfejsy funkcyjne — Function, Predicate, Consumer</div>
+            <span class="lesson-tag tag-java">Java</span>
           </div>
           <div class="lesson done">
             <div class="lesson-num">3</div>
-            <div class="lesson-title">Obliczenia na danych — iteracja po 2D strukturze</div>
+            <div class="lesson-title">Lambdy i referencje do metod</div>
             <span class="lesson-tag tag-java">Java</span>
           </div>
           <div class="lesson done-blue">
             <div class="lesson-num">4</div>
-            <div class="lesson-title">JUnit 5 — struktura testu, asercje, konfiguracja</div>
-            <span class="lesson-tag tag-junit">JUnit</span>
+            <div class="lesson-title">Stream API — przetwarzanie kolekcji</div>
+            <span class="lesson-tag tag-junit">Streams</span>
           </div>
           <div class="lesson done-blue">
             <div class="lesson-num">5</div>
-            <div class="lesson-title">Testowanie przypadków brzegowych — 6 scenariuszy</div>
-            <span class="lesson-tag tag-junit">JUnit</span>
+            <div class="lesson-title">Optional — bezpieczna obsługa braku wartości</div>
+            <span class="lesson-tag tag-io">Optional</span>
           </div>
         </div>
       </div>
@@ -264,27 +262,27 @@
   </div>
 </section>
 
-<!-- ARRAYLIST -->
-<section id="arraylist">
+<!-- GENERICS -->
+<section id="generics">
   <div class="container">
-    <div class="section-label">Kolekcje</div>
-    <div class="section-title">ArrayList — dynamiczne listy</div>
-    <p class="section-sub">W przeciwieństwie do zwykłej tablicy <code style="color:#f89820">int[]</code>, ArrayList sama się powiększa gdy dodajesz elementy. Nie musisz znać rozmiaru z góry.</p>
+    <div class="section-label">Typy generyczne</div>
+    <div class="section-title">Generics — kod wielokrotnego użytku</div>
+    <p class="section-sub">Generics pozwalają pisać klasy i metody które działają dla dowolnego typu — a kompilator sprawdza poprawność typów już na etapie kompilacji, nie w runtime.</p>
     <div class="cards-3">
       <div class="card">
-        <div class="card-icon">📋</div>
-        <h4>ArrayList&lt;Integer&gt;</h4>
-        <p>Lista liczb całkowitych bez stałego rozmiaru. Dodajesz przez <code style="color:#f89820">add()</code>, odczytujesz przez <code style="color:#f89820">get(i)</code>, rozmiar przez <code style="color:#f89820">size()</code>.</p>
+        <div class="card-icon">📦</div>
+        <h4>Klasa generyczna</h4>
+        <p>Parametr <code style="color:#f89820">&lt;T&gt;</code> zastępuje konkretny typ. Kompilator podstawia go przy każdym użyciu — <code style="color:#f89820">Box&lt;String&gt;</code>, <code style="color:#f89820">Box&lt;Integer&gt;</code> to różne typy w czasie kompilacji.</p>
       </div>
       <div class="card">
-        <div class="card-icon">🗂️</div>
-        <h4>Zagnieżdżona ArrayList (2D)</h4>
-        <p><code style="color:#f89820">ArrayList&lt;ArrayList&lt;Integer&gt;&gt;</code> — lista list. Każdy wiersz to osobna lista. Idealnie gdy nie znasz z góry ani liczby wierszy, ani kolumn.</p>
+        <div class="card-icon">🔒</div>
+        <h4>Ograniczenia (bounds)</h4>
+        <p><code style="color:#f89820">&lt;T extends Comparable&lt;T&gt;&gt;</code> — T musi implementować Comparable. Dzięki temu możesz wywołać <code style="color:#f89820">compareTo()</code> wewnątrz metody generycznej.</p>
       </div>
       <div class="card">
-        <div class="card-icon">🔢</div>
-        <h4>List&lt;Double&gt; jako wynik</h4>
-        <p>Metoda może zwracać <code style="color:#f89820">List&lt;Double&gt;</code> — pusta lista oznacza brak wyników, lista z jednym elementem oznacza dokładnie jeden wynik.</p>
+        <div class="card-icon">🃏</div>
+        <h4>Wildcards</h4>
+        <p><code style="color:#f89820">? extends Number</code> — cokolwiek co rozszerza Number (tylko odczyt). <code style="color:#f89820">? super Integer</code> — cokolwiek co jest nad Integer (zapis).</p>
       </div>
     </div>
 
@@ -294,22 +292,22 @@
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">ArrayList 2D — tworzenie i odczyt</span>
+          <span class="code-filename">Prosta klasa generyczna Box&lt;T&gt;</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="cm">// deklaracja 2D ArrayList</span><br>
-<span class="cl">ArrayList</span>&lt;<span class="cl">ArrayList</span>&lt;<span class="cl">Integer</span>&gt;&gt; tabela =<br>
-&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">ArrayList</span>&lt;&gt;();<br>
+<span class="kw">public class</span> <span class="cl">Box</span>&lt;<span class="cl">T</span>&gt; {<br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="cl">T</span> value;<br>
 <br>
-<span class="cm">// dodaj nowy wiersz</span><br>
-<span class="cl">ArrayList</span>&lt;<span class="cl">Integer</span>&gt; wiersz = <span class="kw">new</span> <span class="cl">ArrayList</span>&lt;&gt;();<br>
-wiersz.<span class="fn">add</span>(<span class="num-lit">0</span>);<br>
-wiersz.<span class="fn">add</span>(<span class="num-lit">1</span>);<br>
-wiersz.<span class="fn">add</span>(<span class="num-lit">0</span>);<br>
-tabela.<span class="fn">add</span>(wiersz);<br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="fn">Box</span>(<span class="cl">T</span> value) { <span class="kw">this</span>.value = value; }<br>
 <br>
-<span class="cm">// odczyt elementu [wiersz][kolumna]</span><br>
-<span class="kw">int</span> val = tabela.<span class="fn">get</span>(<span class="num-lit">0</span>).<span class="fn">get</span>(<span class="num-lit">1</span>); <span class="cm">// → 1</span>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">T</span> <span class="fn">get</span>() { <span class="kw">return</span> value; }<br>
+<br>
+&nbsp;&nbsp;<span class="kw">public</span> &lt;<span class="cl">R</span>&gt; <span class="cl">Box</span>&lt;<span class="cl">R</span>&gt; <span class="fn">map</span>(<span class="cl">Function</span>&lt;<span class="cl">T</span>,<span class="cl">R</span>&gt; fn) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return new</span> <span class="cl">Box</span>&lt;&gt;(fn.<span class="fn">apply</span>(value));<br>
+&nbsp;&nbsp;}<br>
+}<br>
+<span class="cm">// użycie:</span><br>
+<span class="kw">var</span> b = <span class="kw">new</span> <span class="cl">Box</span>&lt;&gt;(<span class="str">"hello"</span>).<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">toUpperCase</span>);
         </div>
       </div>
       <div class="code-wrap">
@@ -317,33 +315,32 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">Iteracja po 2D ArrayList</span>
+          <span class="code-filename">Metoda generyczna z ograniczeniem</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="kw">for</span> (<span class="kw">int</span> row = <span class="num-lit">0</span>; row &lt; tabela.<span class="fn">size</span>(); row++) {<br>
-&nbsp;&nbsp;<span class="kw">for</span> (<span class="kw">int</span> col = <span class="num-lit">0</span>; col &lt; tabela.<span class="fn">get</span>(row).<span class="fn">size</span>(); col++) {<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">int</span> val = tabela.<span class="fn">get</span>(row).<span class="fn">get</span>(col);<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (val != <span class="num-lit">0</span>) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// przetwórz niezerowy element</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// col = pozycja x, row = pozycja y</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;}<br>
+<span class="kw">public static</span> &lt;<span class="cl">T</span> <span class="kw">extends</span> <span class="cl">Comparable</span>&lt;<span class="cl">T</span>&gt;&gt;<br>
+<span class="cl">T</span> <span class="fn">max</span>(<span class="cl">List</span>&lt;<span class="cl">T</span>&gt; list) {<br>
+&nbsp;&nbsp;<span class="kw">if</span> (list.<span class="fn">isEmpty</span>())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">NoSuchElementException</span>();<br>
+&nbsp;&nbsp;<span class="cl">T</span> result = list.<span class="fn">get</span>(<span class="num-lit">0</span>);<br>
+&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">T</span> item : list)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (item.<span class="fn">compareTo</span>(result) &gt; <span class="num-lit">0</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result = item;<br>
+&nbsp;&nbsp;<span class="kw">return</span> result;<br>
 }<br>
-<span class="cm">// rozmiar: tabela.size() wierszy</span>
+<span class="cm">// działa dla Integer, String, Double...</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PLIKI I/O -->
-<section id="io">
+<!-- LAMBDY -->
+<section id="lambdy">
   <div class="container">
-    <div class="section-label">Wejście / Wyjście</div>
-    <div class="section-title">Operacje na plikach tekstowych</div>
-    <p class="section-sub">Java oferuje kilka sposobów na czytanie i zapis plików. Scanner jest najprostszy do czytania wiersz po wierszu — PrintWriter do zapisu.</p>
+    <div class="section-label">Programowanie funkcyjne</div>
+    <div class="section-title">Lambdy i interfejsy funkcyjne</div>
+    <p class="section-sub">Lambda to anonimowa implementacja interfejsu funkcyjnego — interfejsu z dokładnie jedną abstrakcyjną metodą. Zamiast anonimowej klasy piszesz zwięzłe wyrażenie.</p>
 
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
       <div class="code-wrap">
@@ -351,24 +348,22 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">Czytanie pliku — Scanner</span>
+          <span class="code-filename">Główne interfejsy funkcyjne</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="kw">import</span> java.util.<span class="cl">Scanner</span>;<br>
-<span class="kw">import</span> java.io.*;<br>
+<span class="cm">// Function&lt;T, R&gt; — wejście T, wyjście R</span><br>
+<span class="cl">Function</span>&lt;<span class="cl">String</span>, <span class="cl">Integer</span>&gt; len = <span class="cl">String</span>::<span class="fn">length</span>;<br>
+<span class="fn">len</span>.<span class="fn">apply</span>(<span class="str">"Java"</span>); <span class="cm">// → 4</span><br>
 <br>
-<span class="kw">try</span> (<span class="cl">Scanner</span> sc = <span class="kw">new</span> <span class="cl">Scanner</span>(<span class="kw">new</span> <span class="cl">File</span>(filename))) {<br>
-&nbsp;&nbsp;<span class="kw">while</span> (sc.<span class="fn">hasNextLine</span>()) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span> linia = sc.<span class="fn">nextLine</span>().<span class="fn">trim</span>();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (linia.<span class="fn">isEmpty</span>()) <span class="kw">continue</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// podziel po spacji</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span>[] czesci = linia.<span class="fn">split</span>(<span class="str">"\\s+"</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// przetwórz każdą część...</span><br>
-&nbsp;&nbsp;}<br>
-} <span class="kw">catch</span> (<span class="cl">FileNotFoundException</span> e) {<br>
-&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Nie znaleziono pliku!"</span>);<br>
-}<br>
-<span class="cm">// try-with-resources — Scanner zamknie się sam</span>
+<span class="cm">// Predicate&lt;T&gt; — wejście T, wyjście boolean</span><br>
+<span class="cl">Predicate</span>&lt;<span class="cl">String</span>&gt; empty = <span class="cl">String</span>::<span class="fn">isEmpty</span>;<br>
+<span class="cl">Predicate</span>&lt;<span class="cl">String</span>&gt; notEmpty = empty.<span class="fn">negate</span>();<br>
+<br>
+<span class="cm">// Consumer&lt;T&gt; — wejście T, brak wyjścia</span><br>
+<span class="cl">Consumer</span>&lt;<span class="cl">String</span>&gt; print = <span class="cl">System</span>.out::<span class="fn">println</span>;<br>
+<br>
+<span class="cm">// Supplier&lt;T&gt; — brak wejścia, wyjście T</span><br>
+<span class="cl">Supplier</span>&lt;<span class="cl">List</span>&lt;<span class="cl">String</span>&gt;&gt; newList = <span class="cl">ArrayList</span>::<span class="kw">new</span>;
         </div>
       </div>
       <div class="code-wrap">
@@ -376,23 +371,22 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">Zapis do pliku — PrintWriter</span>
+          <span class="code-filename">Składnia lambdy — skróty</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="kw">import</span> java.io.*;<br>
+<span class="cm">// pełna forma</span><br>
+<span class="cl">Comparator</span>&lt;<span class="cl">String</span>&gt; c1 =<br>
+&nbsp;&nbsp;(a, b) -&gt; { <span class="kw">return</span> a.<span class="fn">compareTo</span>(b); };<br>
 <br>
-<span class="kw">try</span> (<span class="cl">PrintWriter</span> pw = <span class="kw">new</span> <span class="cl">PrintWriter</span>(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">FileWriter</span>(<span class="str">"wynik.txt"</span>))) {<br>
+<span class="cm">// ciało jednolinijkowe — bez return i {}</span><br>
+<span class="cl">Comparator</span>&lt;<span class="cl">String</span>&gt; c2 =<br>
+&nbsp;&nbsp;(a, b) -&gt; a.<span class="fn">compareTo</span>(b);<br>
 <br>
-&nbsp;&nbsp;pw.<span class="fn">println</span>(<span class="str">"Wiersz 1"</span>);<br>
-&nbsp;&nbsp;pw.<span class="fn">println</span>(<span class="str">"Wiersz 2"</span>);<br>
-&nbsp;&nbsp;<span class="cm">// println → nowa linia po każdym</span><br>
-&nbsp;&nbsp;<span class="cm">// print  → bez nowej linii</span><br>
+<span class="cm">// referencja do metody — najkrótsze</span><br>
+<span class="cl">Comparator</span>&lt;<span class="cl">String</span>&gt; c3 =<br>
+&nbsp;&nbsp;<span class="cl">String</span>::<span class="fn">compareTo</span>;<br>
 <br>
-} <span class="kw">catch</span> (<span class="cl">IOException</span> e) {<br>
-&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">RuntimeException</span>(e);<br>
-}<br>
-<span class="cm">// plik zamknie się automatycznie</span>
+<span class="cm">// wszystkie trzy są równoważne</span>
         </div>
       </div>
     </div>
@@ -403,19 +397,19 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">Parsowanie liczb ze Stringa</span>
+          <span class="code-filename">Kompozycja funkcji — andThen, compose</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="cl">String</span> linia = <span class="str">"0 1 1 0"</span>;<br>
-<span class="cl">String</span>[] czesci = linia.<span class="fn">split</span>(<span class="str">"\\s+"</span>);<br>
+<span class="cl">Function</span>&lt;<span class="cl">String</span>, <span class="cl">String</span>&gt; trim =<br>
+&nbsp;&nbsp;<span class="cl">String</span>::<span class="fn">trim</span>;<br>
+<span class="cl">Function</span>&lt;<span class="cl">String</span>, <span class="cl">String</span>&gt; upper =<br>
+&nbsp;&nbsp;<span class="cl">String</span>::<span class="fn">toUpperCase</span>;<br>
 <br>
-<span class="cl">ArrayList</span>&lt;<span class="cl">Integer</span>&gt; row = <span class="kw">new</span> <span class="cl">ArrayList</span>&lt;&gt;();<br>
-<span class="kw">for</span> (<span class="cl">String</span> s : czesci) {<br>
-&nbsp;&nbsp;row.<span class="fn">add</span>(<span class="cl">Integer</span>.<span class="fn">parseInt</span>(s));<br>
-}<br>
-<span class="cm">// row = [0, 1, 1, 0]</span><br>
+<span class="cm">// trim, potem upper</span><br>
+<span class="cl">Function</span>&lt;<span class="cl">String</span>, <span class="cl">String</span>&gt; clean =<br>
+&nbsp;&nbsp;trim.<span class="fn">andThen</span>(upper);<br>
 <br>
-<span class="cm">// \\s+ = jedna lub więcej spacji/tabulatorów</span>
+clean.<span class="fn">apply</span>(<span class="str">"  java  "</span>); <span class="cm">// → "JAVA"</span>
         </div>
       </div>
       <div class="code-wrap">
@@ -423,50 +417,53 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">Input od użytkownika — Scanner(System.in)</span>
+          <span class="code-filename">Predicate — łączenie warunków</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="cm">// Scanner może czytać też z klawiatury</span><br>
-<span class="cl">Scanner</span> scanner = <span class="kw">new</span> <span class="cl">Scanner</span>(<span class="cl">System</span>.in);<br>
+<span class="cl">Predicate</span>&lt;<span class="cl">Integer</span>&gt; positive =<br>
+&nbsp;&nbsp;n -&gt; n &gt; <span class="num-lit">0</span>;<br>
+<span class="cl">Predicate</span>&lt;<span class="cl">Integer</span>&gt; even =<br>
+&nbsp;&nbsp;n -&gt; n % <span class="num-lit">2</span> == <span class="num-lit">0</span>;<br>
 <br>
-<span class="cl">System</span>.out.<span class="fn">print</span>(<span class="str">"Podaj nazwę pliku: "</span>);<br>
-<span class="cl">String</span> nazwa = scanner.<span class="fn">nextLine</span>();<br>
+<span class="cm">// oba warunki jednocześnie</span><br>
+<span class="cl">Predicate</span>&lt;<span class="cl">Integer</span>&gt; positiveEven =<br>
+&nbsp;&nbsp;positive.<span class="fn">and</span>(even);<br>
 <br>
-<span class="cm">// Teraz "nazwa" zawiera to co wpisał</span><br>
-<span class="cm">// użytkownik i możesz otworzyć plik.</span>
+positiveEven.<span class="fn">test</span>(<span class="num-lit">4</span>);  <span class="cm">// → true</span><br>
+positiveEven.<span class="fn">test</span>(-<span class="num-lit">4</span>); <span class="cm">// → false</span>
         </div>
       </div>
     </div>
 
-    <div style="margin-top:24px; background:#0f1220; border:1px solid #1e2235; border-left:3px solid #e57373; border-radius:10px; padding:20px 24px;">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><code style="color:#e57373; font-size:14px; font-weight:700;">FileNotFoundException</code><span style="background:rgba(229,115,115,0.1); color:#e57373; font-size:11px; padding:2px 8px; border-radius:4px;">Najczęstszy błąd przy plikach</span></div>
-      <p style="color:#666; font-size:14px; line-height:1.6;">Java rzuca ten wyjątek gdy plik o podanej nazwie nie istnieje. Zawsze łap go w bloku <code style="color:#f89820">catch</code> i informuj użytkownika. Nie pozwól żeby program się crashował bez komunikatu.</p>
+    <div style="margin-top:24px; background:#0f1220; border:1px solid #1e2235; border-left:3px solid #82aaff; border-radius:10px; padding:20px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><code style="color:#82aaff; font-size:14px; font-weight:700;">@FunctionalInterface</code><span style="background:rgba(130,170,255,0.1); color:#82aaff; font-size:11px; padding:2px 8px; border-radius:4px;">Własny interfejs funkcyjny</span></div>
+      <p style="color:#666; font-size:14px; line-height:1.6;">Możesz oznaczyć dowolny interfejs z jedną abstrakcyjną metodą adnotacją <code style="color:#f89820">@FunctionalInterface</code>. Kompilator zgłosi błąd jeśli dodasz drugą metodę abstrakcyjną — chroni to Twój projekt przed przypadkowym zepsuciem kompatybilności z lambdami.</p>
     </div>
   </div>
 </section>
 
-<!-- JUNIT -->
-<section id="junit">
+<!-- STREAM API -->
+<section id="streams">
   <div class="container">
-    <div class="section-label">Testowanie</div>
-    <div class="section-title">JUnit 5 — testy jednostkowe</div>
-    <p class="section-sub">Test jednostkowy sprawdza jedną konkretną rzecz: czy metoda dla danych wejściowych zwraca oczekiwany wynik. JUnit automatyzuje to sprawdzanie.</p>
+    <div class="section-label">Przetwarzanie danych</div>
+    <div class="section-title">Stream API — potoki operacji</div>
+    <p class="section-sub">Stream to sekwencja elementów, przez którą przepuszczasz dane przez kolejne operacje. Kod jest deklaratywny — mówisz <em>co</em> chcesz uzyskać, nie <em>jak</em> to liczyć.</p>
 
     <div class="cards-3">
       <div class="card">
-        <div class="card-icon">🔬</div>
-        <h4>@Test</h4>
-        <p>Adnotacja nad metodą — mówi JUnit "to jest test". Metoda musi być <code style="color:#f89820">void</code>, bez parametrów, nazwa opisuje co sprawdza.</p>
+        <div class="card-icon">🔍</div>
+        <h4>Operacje pośrednie (lazy)</h4>
+        <p><code style="color:#f89820">filter</code>, <code style="color:#f89820">map</code>, <code style="color:#f89820">sorted</code>, <code style="color:#f89820">distinct</code>, <code style="color:#f89820">limit</code> — nie wykonują się od razu, budują tylko potok.</p>
       </div>
       <div class="card">
-        <div class="card-icon">✅</div>
-        <h4>Asercje</h4>
-        <p><code style="color:#f89820">assertEquals(oczekiwana, rzeczywista)</code> — sprawdza równość. <code style="color:#f89820">assertTrue(warunek)</code> — sprawdza czy warunek jest spełniony.</p>
+        <div class="card-icon">🏁</div>
+        <h4>Operacje terminalne</h4>
+        <p><code style="color:#f89820">collect</code>, <code style="color:#f89820">forEach</code>, <code style="color:#f89820">count</code>, <code style="color:#f89820">reduce</code>, <code style="color:#f89820">findFirst</code> — uruchamiają cały potok i zwracają wynik.</p>
       </div>
       <div class="card">
-        <div class="card-icon">📦</div>
-        <h4>build.gradle</h4>
-        <p>Potrzebujesz <code style="color:#82aaff">testImplementation</code> z JUnit Jupiter i <code style="color:#82aaff">useJUnitPlatform()</code> w bloku <code style="color:#82aaff">test</code>. Testy lądują w <code>src/test/java</code>.</p>
+        <div class="card-icon">📊</div>
+        <h4>Collectors</h4>
+        <p><code style="color:#f89820">Collectors.toList()</code>, <code style="color:#f89820">joining(", ")</code>, <code style="color:#f89820">groupingBy(f)</code>, <code style="color:#f89820">counting()</code> — zbierają wyniki strumienia do różnych struktur.</p>
       </div>
     </div>
 
@@ -476,20 +473,20 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">build.gradle — konfiguracja JUnit 5</span>
+          <span class="code-filename">filter + map + collect</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="fn">plugins</span> { id <span class="str">'java'</span> }<br>
-<span class="fn">repositories</span> { <span class="fn">mavenCentral</span>() }<br>
+<span class="cl">List</span>&lt;<span class="cl">String</span>&gt; names = <span class="cl">List</span>.<span class="fn">of</span>(<br>
+&nbsp;&nbsp;<span class="str">"Anna"</span>, <span class="str">"Bartek"</span>, <span class="str">"Ada"</span>, <span class="str">"Cezary"</span><br>
+);<br>
 <br>
-<span class="fn">dependencies</span> {<br>
-&nbsp;&nbsp;testImplementation<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'org.junit.jupiter:junit-jupiter:5.10.0'</span><br>
-}<br>
+<span class="cl">List</span>&lt;<span class="cl">String</span>&gt; result = names.<span class="fn">stream</span>()<br>
+&nbsp;&nbsp;.<span class="fn">filter</span>(n -&gt; n.<span class="fn">startsWith</span>(<span class="str">"A"</span>))<br>
+&nbsp;&nbsp;.<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">toUpperCase</span>)<br>
+&nbsp;&nbsp;.<span class="fn">sorted</span>()<br>
+&nbsp;&nbsp;.<span class="fn">collect</span>(<span class="cl">Collectors</span>.<span class="fn">toList</span>());<br>
 <br>
-<span class="fn">test</span> {<br>
-&nbsp;&nbsp;<span class="fn">useJUnitPlatform</span>() <span class="cm">// włącz JUnit 5</span><br>
-}
+<span class="cm">// result = ["ADA", "ANNA"]</span>
         </div>
       </div>
       <div class="code-wrap">
@@ -497,50 +494,51 @@ tabela.<span class="fn">add</span>(wiersz);<br>
           <div class="code-dot" style="background:#ff5f57"></div>
           <div class="code-dot" style="background:#febc2e"></div>
           <div class="code-dot" style="background:#28c840"></div>
-          <span class="code-filename">Przykładowa klasa testowa</span>
+          <span class="code-filename">reduce i groupingBy</span>
         </div>
         <div class="code-block" style="font-size:13px;">
-<span class="kw">import</span> org.junit.jupiter.api.<span class="cl">Test</span>;<br>
-<span class="kw">import static</span> org.junit.jupiter.api.<span class="cl">Assertions</span>.*;<br>
+<span class="cl">List</span>&lt;<span class="cl">Integer</span>&gt; nums = <span class="cl">List</span>.<span class="fn">of</span>(<span class="num-lit">1</span>,<span class="num-lit">2</span>,<span class="num-lit">3</span>,<span class="num-lit">4</span>,<span class="num-lit">5</span>);<br>
 <br>
-<span class="kw">class</span> <span class="cl">KalkulatorTest</span> {<br>
+<span class="cm">// suma przez reduce</span><br>
+<span class="kw">int</span> sum = nums.<span class="fn">stream</span>()<br>
+&nbsp;&nbsp;.<span class="fn">reduce</span>(<span class="num-lit">0</span>, <span class="cl">Integer</span>::<span class="fn">sum</span>);<br>
+<span class="cm">// sum = 15</span><br>
 <br>
-&nbsp;&nbsp;<span class="ann">@Test</span><br>
-&nbsp;&nbsp;<span class="kw">void</span> <span class="fn">dodawanieDwochLiczb</span>() {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">int</span> wynik = <span class="cl">Kalkulator</span>.<span class="fn">dodaj</span>(<span class="num-lit">3</span>, <span class="num-lit">5</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">8</span>, wynik);<br>
-&nbsp;&nbsp;}<br>
-}
+<span class="cm">// grupowanie po długości nazwy</span><br>
+<span class="cl">Map</span>&lt;<span class="cl">Integer</span>, <span class="cl">List</span>&lt;<span class="cl">String</span>&gt;&gt; byLen =<br>
+&nbsp;&nbsp;names.<span class="fn">stream</span>()<br>
+&nbsp;&nbsp;.<span class="fn">collect</span>(<span class="cl">Collectors</span>.<span class="fn">groupingBy</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span>::<span class="fn">length</span>));
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRZYPADKI TESTOWE -->
-<section id="testy">
+<!-- OPTIONAL -->
+<section id="optional">
   <div class="container">
-    <div class="section-label">Dobre praktyki</div>
-    <div class="section-title">Testowanie przypadków brzegowych</div>
-    <p class="section-sub">Dobry test sprawdza nie tylko "normalny" przypadek — powinien też sprawdzić co się dzieje gdy danych brakuje, są zerowe, albo problem jest nieokreślony.</p>
+    <div class="section-label">Obsługa braku wartości</div>
+    <div class="section-title">Optional — koniec z null</div>
+    <p class="section-sub">Optional&lt;T&gt; to kontener który może trzymać wartość albo być pusty. Zamiast zwracać null i ryzykować NPE, zwracasz Optional — a wywołujący jest zmuszony obsłużyć brak wartości.</p>
 
-    <p style="color:#555; font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Przykład: metoda obliczająca pierwiastki równania <code style="color:#888">ax² + bx + c = 0</code></p>
+    <p style="color:#555; font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Porównanie: zwykłe null vs Optional</p>
     <table class="data-table">
       <thead>
         <tr>
-          <th>Przypadek</th>
-          <th>Warunek</th>
-          <th>Oczekiwany wynik</th>
-          <th>Przykład (a, b, c)</th>
+          <th>Sytuacja</th>
+          <th>Bez Optional</th>
+          <th>Z Optional</th>
+          <th>Uwaga</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>Dwa pierwiastki</td><td>a≠0, Δ <span class="ok">&gt; 0</span></td><td>lista 2 elementów</td><td><code>(1, -5, -6)</code> → -1 i 6</td></tr>
-        <tr><td>Jeden pierwiastek</td><td>a≠0, Δ <span class="ok">= 0</span></td><td>lista 1 elementu</td><td><code>(1, -4, 4)</code> → 2</td></tr>
-        <tr><td>Brak pierwiastków</td><td>a≠0, Δ <span class="err">&lt; 0</span></td><td>pusta lista</td><td><code>(1, 1, 6)</code> → [ ]</td></tr>
-        <tr><td>Równanie liniowe</td><td>a=0, b≠0</td><td>lista 1 elementu</td><td><code>(0, 1, 6)</code> → -6</td></tr>
-        <tr><td>Sprzeczność</td><td>a=0, b=0, c≠0</td><td>pusta lista</td><td><code>(0, 0, 7)</code> → [ ]</td></tr>
-        <tr><td><span class="inf">Nieskończenie wiele</span></td><td>a=0, b=0, c=0</td><td>lista z ∞</td><td><code>(0, 0, 0)</code> → [∞]</td></tr>
+        <tr><td>Brak wartości</td><td><code>return null</code></td><td><code>return Optional.empty()</code></td><td><span class="ok">bezpieczne</span></td></tr>
+        <tr><td>Jest wartość</td><td><code>return obj</code></td><td><code>return Optional.of(obj)</code></td><td><span class="ok">bezpieczne</span></td></tr>
+        <tr><td>Może być null</td><td><code>return obj</code></td><td><code>return Optional.ofNullable(obj)</code></td><td><span class="ok">bezpieczne</span></td></tr>
+        <tr><td>Domyślna wartość</td><td><code>obj != null ? obj : def</code></td><td><code>opt.orElse(def)</code></td><td><span class="inf">czytelniejsze</span></td></tr>
+        <tr><td>Wyjątek gdy brak</td><td>ręczny if + throw</td><td><code>opt.orElseThrow()</code></td><td><span class="inf">zwięźlejsze</span></td></tr>
+        <tr><td>Transformacja</td><td>null-check + map</td><td><code>opt.map(f).filter(p)</code></td><td><span class="ok">pipeline</span></td></tr>
       </tbody>
     </table>
 
@@ -549,31 +547,22 @@ tabela.<span class="fn">add</span>(wiersz);<br>
         <div class="code-dot" style="background:#ff5f57"></div>
         <div class="code-dot" style="background:#febc2e"></div>
         <div class="code-dot" style="background:#28c840"></div>
-        <span class="code-filename">Wszystkie 6 testów — RootsCalculatorTest.java</span>
+        <span class="code-filename">Optional — typowe wzorce użycia</span>
       </div>
       <div class="code-block" style="font-size:13px; line-height:1.7;">
-<span class="ann">@Test</span> <span class="kw">void</span> <span class="fn">deltaDodatnia</span>() {<br>
-&nbsp;&nbsp;<span class="kw">var</span> r = <span class="cl">RootsCalculator</span>.<span class="fn">calculate_roots</span>(<span class="num-lit">1</span>, <span class="num-lit">-5</span>, <span class="num-lit">-6</span>);<br>
-&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">2</span>, r.<span class="fn">size</span>()); <span class="fn">assertTrue</span>(r.<span class="fn">contains</span>(-<span class="num-lit">1.0</span>)); <span class="fn">assertTrue</span>(r.<span class="fn">contains</span>(<span class="num-lit">6.0</span>));<br>
-}<br>
-<span class="ann">@Test</span> <span class="kw">void</span> <span class="fn">deltaZero</span>() {<br>
-&nbsp;&nbsp;<span class="kw">var</span> r = <span class="cl">RootsCalculator</span>.<span class="fn">calculate_roots</span>(<span class="num-lit">1</span>, <span class="num-lit">-4</span>, <span class="num-lit">4</span>);<br>
-&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">1</span>, r.<span class="fn">size</span>()); <span class="fn">assertEquals</span>(<span class="num-lit">2.0</span>, r.<span class="fn">get</span>(<span class="num-lit">0</span>));<br>
-}<br>
-<span class="ann">@Test</span> <span class="kw">void</span> <span class="fn">deltaUjemna</span>() {<br>
-&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">0</span>, <span class="cl">RootsCalculator</span>.<span class="fn">calculate_roots</span>(<span class="num-lit">1</span>, <span class="num-lit">1</span>, <span class="num-lit">6</span>).<span class="fn">size</span>());<br>
-}<br>
-<span class="ann">@Test</span> <span class="kw">void</span> <span class="fn">rownanieLiniowe</span>() {<br>
-&nbsp;&nbsp;<span class="kw">var</span> r = <span class="cl">RootsCalculator</span>.<span class="fn">calculate_roots</span>(<span class="num-lit">0</span>, <span class="num-lit">1</span>, <span class="num-lit">6</span>);<br>
-&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">1</span>, r.<span class="fn">size</span>()); <span class="fn">assertEquals</span>(-<span class="num-lit">6.0</span>, r.<span class="fn">get</span>(<span class="num-lit">0</span>));<br>
-}<br>
-<span class="ann">@Test</span> <span class="kw">void</span> <span class="fn">sprzecznosc</span>() {<br>
-&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">0</span>, <span class="cl">RootsCalculator</span>.<span class="fn">calculate_roots</span>(<span class="num-lit">0</span>, <span class="num-lit">0</span>, <span class="num-lit">7</span>).<span class="fn">size</span>());<br>
-}<br>
-<span class="ann">@Test</span> <span class="kw">void</span> <span class="fn">nieskonczonieWiele</span>() {<br>
-&nbsp;&nbsp;<span class="kw">var</span> r = <span class="cl">RootsCalculator</span>.<span class="fn">calculate_roots</span>(<span class="num-lit">0</span>, <span class="num-lit">0</span>, <span class="num-lit">0</span>);<br>
-&nbsp;&nbsp;<span class="fn">assertEquals</span>(<span class="num-lit">1</span>, r.<span class="fn">size</span>()); <span class="fn">assertEquals</span>(<span class="cl">Double</span>.POSITIVE_INFINITY, r.<span class="fn">get</span>(<span class="num-lit">0</span>));<br>
-}
+<span class="cm">// tworzenie</span><br>
+<span class="cl">Optional</span>&lt;<span class="cl">String</span>&gt; a = <span class="cl">Optional</span>.<span class="fn">of</span>(<span class="str">"Java"</span>);<br>
+<span class="cl">Optional</span>&lt;<span class="cl">String</span>&gt; b = <span class="cl">Optional</span>.<span class="fn">empty</span>();<br>
+<span class="cl">Optional</span>&lt;<span class="cl">String</span>&gt; c = <span class="cl">Optional</span>.<span class="fn">ofNullable</span>(maybeNull);<br>
+<br>
+<span class="cm">// bezpieczne przetwarzanie — map nie wywołuje się na empty</span><br>
+<span class="cl">Optional</span>&lt;<span class="cl">Integer</span>&gt; len = a.<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">length</span>); <span class="cm">// Optional[4]</span><br>
+<span class="cl">Optional</span>&lt;<span class="cl">Integer</span>&gt; lenB = b.<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">length</span>); <span class="cm">// Optional.empty</span><br>
+<br>
+<span class="cm">// wyciągnięcie wartości</span><br>
+<span class="kw">int</span> x = len.<span class="fn">orElse</span>(<span class="num-lit">0</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 4</span><br>
+<span class="kw">int</span> y = lenB.<span class="fn">orElse</span>(<span class="num-lit">0</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 0</span><br>
+<span class="kw">int</span> z = len.<span class="fn">orElseThrow</span>(); <span class="cm">// rzuca NoSuchElementException gdy empty</span>
       </div>
     </div>
   </div>
@@ -584,31 +573,31 @@ tabela.<span class="fn">add</span>(wiersz);<br>
   <div class="container">
     <div class="section-label">Najczęstsze pytania</div>
     <div class="section-title">FAQ</div>
-    <p class="section-sub">Odpowiedzi na pytania które pojawiają się podczas pracy z plikami i testami.</p>
+    <p class="section-sub">Odpowiedzi na pytania które pojawiają się podczas nauki generics, lambd i Stream API.</p>
     <div class="faq">
       <div class="faq-item">
-        <div class="faq-q">Jaka różnica między <code>Scanner(File)</code> a <code>Scanner(System.in)</code>?<span class="arrow">▾</span></div>
-        <div class="faq-a"><code>Scanner(new File("nazwa.txt"))</code> czyta z pliku na dysku. <code>Scanner(System.in)</code> czyta z klawiatury (standardowe wejście). Działają tak samo — <code>nextLine()</code>, <code>nextInt()</code> itd. — tylko źródło danych jest inne.</div>
+        <div class="faq-q">Czym różni się <code>map</code> od <code>flatMap</code> w Stream?<span class="arrow">▾</span></div>
+        <div class="faq-a"><code>map</code> zamienia każdy element na inny element: <code>Stream&lt;T&gt; → Stream&lt;R&gt;</code>. <code>flatMap</code> zamienia każdy element na strumień, a potem spłaszcza wszystkie strumienie w jeden: użyteczne gdy np. masz listę list i chcesz uzyskać płaską listę wszystkich elementów.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Co to jest <code>try-with-resources</code>?<span class="arrow">▾</span></div>
-        <div class="faq-a">Gdy otwierasz plik przez <code>try (Scanner sc = new Scanner(...))</code>, Java automatycznie zamknie <code>sc</code> po wyjściu z bloku try — nawet jeśli wystąpił wyjątek. Bez tego musisz ręcznie wywołać <code>sc.close()</code> w bloku <code>finally</code>. Try-with-resources jest czystsze i bezpieczniejsze.</div>
+        <div class="faq-q">Kiedy używać <code>? extends T</code>, a kiedy <code>? super T</code>?<span class="arrow">▾</span></div>
+        <div class="faq-a">Zasada PECS (Producer Extends, Consumer Super): jeśli kolekcja <em>produkuje</em> elementy (czytasz z niej) — używaj <code>? extends T</code>. Jeśli <em>konsumuje</em> (piszesz do niej) — używaj <code>? super T</code>. Jeśli robisz obie rzeczy — użyj konkretnego typu T bez wildcard.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Dlaczego w JUnit oczekiwana wartość jest pierwszym argumentem?<span class="arrow">▾</span></div>
-        <div class="faq-a">To konwencja JUnit: <code>assertEquals(OCZEKIWANA, RZECZYWISTA)</code>. Gdy test padnie, JUnit wyświetla "expected 2 but was 3" — właśnie dlatego że oczekiwana jest pierwsza. Odwrotna kolejność da mylące komunikaty o błędach.</div>
+        <div class="faq-q">Czy stream można przeiterować dwa razy?<span class="arrow">▾</span></div>
+        <div class="faq-a">Nie — stream można skonsumować tylko raz. Po wywołaniu operacji terminalnej (np. <code>collect</code>, <code>forEach</code>) stream jest zamknięty. Próba ponownego użycia rzuca <code>IllegalStateException</code>. Jeśli potrzebujesz wielokrotnego dostępu, zbierz wyniki do listy.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Gdzie w projekcie Gradle mają leżeć klasy testowe?<span class="arrow">▾</span></div>
-        <div class="faq-a">Kod testowy trafia do <code>src/test/java/...</code> (nie <code>src/main/java</code>). Gradle kompiluje je osobno i uruchamia przez <code>gradlew test</code>. Raport HTML z wynikami testów znajdziesz w <code>build/reports/tests/test/index.html</code>.</div>
+        <div class="faq-q">Co to jest type erasure i dlaczego nie można zrobić <code>new T()</code>?<span class="arrow">▾</span></div>
+        <div class="faq-a">W czasie kompilacji Java usuwa informacje o typie generycznym — to type erasure. W bytecode <code>Box&lt;String&gt;</code> i <code>Box&lt;Integer&gt;</code> to ta sama klasa. Dlatego w runtime nie wiadomo co to T i nie można tworzyć instancji. Obejście: przekaż <code>Class&lt;T&gt; clazz</code> i użyj <code>clazz.getDeclaredConstructor().newInstance()</code>.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Jak sprawdzić czy lista zawiera konkretną wartość w JUnit?<span class="arrow">▾</span></div>
-        <div class="faq-a">Używasz <code>assertTrue(lista.contains(wartość))</code>. Alternatywnie możesz sprawdzić dokładną kolejność: <code>assertEquals(wartość, lista.get(0))</code>. Jeśli kolejność nie jest gwarantowana (np. dwa pierwiastki mogą być w dowolnej kolejności), lepiej użyć <code>contains()</code>.</div>
+        <div class="faq-q">Jaka różnica między <code>orElse</code> a <code>orElseGet</code> w Optional?<span class="arrow">▾</span></div>
+        <div class="faq-a"><code>orElse(default)</code> zawsze ewaluuje <code>default</code> — nawet gdy Optional ma wartość. <code>orElseGet(() -&gt; expensive())</code> wywołuje dostawcę tylko gdy Optional jest pusty. Jeśli wartość domyślna jest kosztowna do obliczenia, zawsze preferuj <code>orElseGet</code>.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Co zwrócić gdy problem ma nieskończoną liczbę rozwiązań?<span class="arrow">▾</span></div>
-        <div class="faq-a">Jedną z konwencji jest zwrócenie listy z elementem <code>Double.POSITIVE_INFINITY</code>. Dzięki temu metoda zawsze zwraca <code>List&lt;Double&gt;</code> — nie trzeba tworzyć osobnego wyjątku ani zwracać <code>null</code>. Brak rozwiązań = pusta lista; nieskończenie wiele = lista z ∞.</div>
+        <div class="faq-q">Czy <code>var</code> to dynamiczne typowanie?<span class="arrow">▾</span></div>
+        <div class="faq-a">Nie — <code>var</code> (od Java 10) to wnioskowanie typów lokalnych. Kompilator sam ustala typ zmiennej na podstawie wyrażenia po prawej stronie. Typ jest nadal statyczny i znany w czasie kompilacji — <code>var</code> to tylko skrót składniowy, nie dynamika jak w Pythonie czy JavaScript.</div>
       </div>
     </div>
   </div>
@@ -618,14 +607,14 @@ tabela.<span class="fn">add</span>(wiersz);<br>
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="logo" style="font-size:18px; cursor:default;">☕ <span style="color:#fff">JavaLab</span></div>
-      <p>Materiały do nauki Javy — operacje na plikach, dynamiczne kolekcje i testy jednostkowe JUnit 5.</p>
+      <p>Materiały do nauki Javy — typy generyczne, lambdy, Stream API i Optional w jednym miejscu.</p>
     </div>
     <div class="footer-col">
       <h5>Sekcje</h5>
-      <a href="#arraylist">ArrayList 2D</a>
-      <a href="#io">Pliki I/O</a>
-      <a href="#junit">JUnit 5</a>
-      <a href="#testy">Przypadki testowe</a>
+      <a href="#generics">Generics</a>
+      <a href="#lambdy">Lambdy</a>
+      <a href="#streams">Stream API</a>
+      <a href="#optional">Optional</a>
       <a href="#faq">FAQ</a>
     </div>
     <div class="footer-col">
@@ -635,7 +624,7 @@ tabela.<span class="fn">add</span>(wiersz);<br>
   </div>
   <div class="footer-bottom">
     <p>JavaLab · Programowanie Obiektowe · 2025</p>
-    <p style="color:#222;">java.io · java.util · org.junit.jupiter</p>
+    <p style="color:#222;">java.util.function · java.util.stream · java.util.Optional</p>
   </div>
 </footer>
 
