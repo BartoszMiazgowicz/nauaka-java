@@ -639,96 +639,84 @@
       <p>W IntelliJ: <strong>File → New → Project → Java</strong>. W folderze <code>src</code> utwórz trzy pliki:</p>
       <div class="code-block" style="line-height:1.9;">
 <span style="color:#82aaff;">📁 src</span><br>
-&nbsp;├── <span style="color:#c3e88d;">📄 DataWaznosci.java</span> &nbsp;<span style="color:#6b7280;">// klasa dodatkowa — kompozycja (6.2)</span><br>
-&nbsp;├── <span style="color:#c3e88d;">📄 Towar.java</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7280;">// klasa poboczna (6.0 – 6.3)</span><br>
+&nbsp;├── <span style="color:#c3e88d;">📄 DataWaznosci.java</span> &nbsp;<span style="color:#6b7280;">// klasa pomocnicza — data ważności</span><br>
+&nbsp;├── <span style="color:#c3e88d;">📄 Produkt.java</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7280;">// klasa produktu — static + kompozycja</span><br>
 &nbsp;└── <span style="color:#c3e88d;">📄 Sklep.java</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7280;">// klasa główna z main()</span>
       </div>
     </div>
 
     <hr class="modal-divider">
     <div class="part-banner part-blue">
-      <p>📅 CZĘŚĆ 2 — DataWaznosci.java (zadanie 6.2)</p>
-      <p>Klasa w kompozycji z Towar — data ważności nierozłączna od towaru.</p>
+      <p>📅 CZĘŚĆ 2 — DataWaznosci.java</p>
+      <p>Klasa pomocnicza — przechowuje datę ważności. Konstruktor zwykły i kopiujący.</p>
     </div>
     <div class="modal-step">
       <h4><span class="num">2</span> DataWaznosci.java</h4>
-      <p>Klasa <strong>package-private</strong> (bez <code>public</code>) — spełnia wymóg 6.3: niewidoczna spoza pakietu.</p>
+      <p>Pola package-private — dostępne bezpośrednio w klasie <code>Produkt</code>.</p>
       <span class="file-label">📄 DataWaznosci.java</span>
       <div class="code-block" style="font-size:11.5px;line-height:1.7;">
-<span class="cm">// 6.3: brak public → package-private (niewidoczna spoza pakietu)</span><br>
 <span class="kw">class</span> <span class="cl">DataWaznosci</span> {<br>
-&nbsp;&nbsp;<span class="kw">private int</span> dzien, miesiac, rok;<br><br>
-&nbsp;&nbsp;<span class="cl">DataWaznosci</span>(<span class="kw">int</span> dzien, <span class="kw">int</span> miesiac, <span class="kw">int</span> rok) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[DataWaznosci] konstruktor: "</span> + dzien + <span class="str">"/"</span> + miesiac + <span class="str">"/"</span> + rok);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dzien = dzien;&nbsp;&nbsp;<span class="kw">this</span>.miesiac = miesiac;&nbsp;&nbsp;<span class="kw">this</span>.rok = rok;<br>
+&nbsp;&nbsp;<span class="kw">int</span> dzien, miesiac, rok;<br><br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">DataWaznosci</span>(<span class="kw">int</span> dzien, <span class="kw">int</span> miesiac, <span class="kw">int</span> rok) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dzien = dzien;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.miesiac = miesiac;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.rok = rok;<br>
 &nbsp;&nbsp;}<br><br>
-&nbsp;&nbsp;<span class="cm">// konstruktor kopiujący — głęboka kopia dla kompozycji</span><br>
-&nbsp;&nbsp;<span class="cl">DataWaznosci</span>(<span class="cl">DataWaznosci</span> other) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[DataWaznosci] konstruktor kopiujący"</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dzien = other.dzien;&nbsp;&nbsp;<span class="kw">this</span>.miesiac = other.miesiac;&nbsp;&nbsp;<span class="kw">this</span>.rok = other.rok;<br>
-&nbsp;&nbsp;}<br><br>
-&nbsp;&nbsp;<span class="ann">@Override</span><br>
-&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">String</span> <span class="fn">toString</span>() { <span class="kw">return</span> dzien + <span class="str">"/"</span> + miesiac + <span class="str">"/"</span> + rok; }<br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">DataWaznosci</span>(<span class="cl">DataWaznosci</span> innaData) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dzien = innaData.dzien;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.miesiac = innaData.miesiac;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.rok = innaData.rok;<br>
+&nbsp;&nbsp;}<br>
 }
       </div>
     </div>
 
     <hr class="modal-divider">
     <div class="part-banner part-orange">
-      <p>🛒 CZĘŚĆ 3 — Towar.java (zadania 6.0, 6.1, 6.2, 6.3)</p>
-      <p>Konstruktory, pola statyczne/niestatyczne, kompozycja i private.</p>
+      <p>📦 CZĘŚĆ 3 — Produkt.java (konstruktory, static, kompozycja)</p>
+      <p>Trzy konstruktory, pole statyczne jako licznik, pole instancyjne jako ID.</p>
     </div>
     <div class="modal-step">
-      <h4><span class="num">3</span> Towar.java</h4>
-      <span class="file-label">📄 Towar.java</span>
+      <h4><span class="num">3</span> Produkt.java</h4>
+      <span class="file-label">📄 Produkt.java</span>
       <div class="code-block" style="font-size:11.5px;line-height:1.7;">
-<span class="kw">import</span> java.util.*;<br><br>
-<span class="cm">// 6.3: package-private (bez public) — Towar niewidoczny spoza pakietu</span><br>
-<span class="kw">class</span> <span class="cl">Towar</span> {<br><br>
-&nbsp;&nbsp;<span class="cm">// ── 6.1: pola statyczne i niestatyczne ──────────────────────────────</span><br>
-&nbsp;&nbsp;<span class="cm">// ✓ static: jedno pole dla WSZYSTKICH obiektów → liczy sumę stworzonych</span><br>
-&nbsp;&nbsp;<span class="kw">private static int</span> countStatic_ = <span class="num-lit">0</span>;<br>
-&nbsp;&nbsp;<span class="cm">// ✗ countNonStatic_: każdy obiekt ma własną kopię (zawsze = 1) — wykomentowane</span><br>
-&nbsp;&nbsp;<span class="cm">// public int countNonStatic_ = 0;</span><br><br>
-&nbsp;&nbsp;<span class="cm">// ✓ instance: własna kopia w każdym obiekcie → unikalny ID zachowany</span><br>
-&nbsp;&nbsp;<span class="kw">private int</span> idNonStatic_;<br>
-&nbsp;&nbsp;<span class="cm">// ✗ idStatic_: wszyscy widzą tę samą wartość (ostatnią) — wykomentowane</span><br>
-&nbsp;&nbsp;<span class="cm">// public static int idStatic_ = 0;</span><br><br>
-&nbsp;&nbsp;<span class="cm">// ── 6.3: private — dostęp tylko wewnątrz klasy Towar ────────────────</span><br>
+<span class="kw">class</span> <span class="cl">Produkt</span> {<br><br>
 &nbsp;&nbsp;<span class="kw">private</span> <span class="cl">String</span> nazwa;<br>
 &nbsp;&nbsp;<span class="kw">private double</span> cena;<br>
-&nbsp;&nbsp;<span class="kw">private int</span> ilosc;<br>
-&nbsp;&nbsp;<span class="kw">private</span> <span class="cl">DataWaznosci</span> dataWaznosci; <span class="cm">// 6.2: kompozycja</span><br><br>
-&nbsp;&nbsp;<span class="cm">// 6.3: getter — Sklep może ODCZYTAĆ countStatic_, nie może go zmienić</span><br>
-&nbsp;&nbsp;<span class="kw">static int</span> <span class="fn">getCount</span>() { <span class="kw">return</span> countStatic_; }<br><br>
-&nbsp;&nbsp;<span class="cm">// ── 6.0: konstruktor domyślny ────────────────────────────────────────</span><br>
-&nbsp;&nbsp;<span class="cl">Towar</span>() {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[Towar] konstruktor domyślny"</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = <span class="str">"ERROR"</span>;&nbsp;&nbsp;<span class="kw">this</span>.cena = -<span class="num-lit">1</span>;&nbsp;&nbsp;<span class="kw">this</span>.ilosc = -<span class="num-lit">1</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dataWaznosci = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">1</span>, <span class="num-lit">1</span>, <span class="num-lit">1970</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;countStatic_++;&nbsp;&nbsp;<span class="kw">this</span>.idNonStatic_ = countStatic_;<br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="cl">DataWaznosci</span> data;<br><br>
+&nbsp;&nbsp;<span class="kw">private static int</span> licznikWszystkich = <span class="num-lit">0</span>;<br>
+&nbsp;&nbsp;<span class="kw">private int</span> idProduktu;<br><br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">Produkt</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = <span class="str">"ERROR"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.cena = -<span class="num-lit">1.0</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.data = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(-<span class="num-lit">1</span>, -<span class="num-lit">1</span>, -<span class="num-lit">1</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">nadajId</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Utworzono domyślny produkt (ERROR)."</span>);<br>
 &nbsp;&nbsp;}<br><br>
-&nbsp;&nbsp;<span class="cm">// ── 6.0: konstruktor z parametrami ──────────────────────────────────</span><br>
-&nbsp;&nbsp;<span class="cl">Towar</span>(<span class="cl">String</span> nazwa, <span class="kw">double</span> cena, <span class="kw">int</span> ilosc, <span class="cl">DataWaznosci</span> data) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[Towar] konstruktor z parametrami: "</span> + nazwa);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = nazwa;&nbsp;&nbsp;<span class="kw">this</span>.cena = cena;&nbsp;&nbsp;<span class="kw">this</span>.ilosc = ilosc;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dataWaznosci = data;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;countStatic_++;&nbsp;&nbsp;<span class="kw">this</span>.idNonStatic_ = countStatic_;<br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">Produkt</span>(<span class="cl">String</span> nazwa, <span class="kw">double</span> cena, <span class="kw">int</span> d, <span class="kw">int</span> m, <span class="kw">int</span> r) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = nazwa;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.cena = cena;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.data = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(d, m, r);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">nadajId</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Utworzono produkt z parametrami: "</span> + nazwa);<br>
 &nbsp;&nbsp;}<br><br>
-&nbsp;&nbsp;<span class="cm">// ── 6.0: konstruktor kopiujący ───────────────────────────────────────</span><br>
-&nbsp;&nbsp;<span class="cl">Towar</span>(<span class="cl">Towar</span> other) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[Towar] konstruktor kopiujący: "</span> + other.nazwa);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = other.nazwa;&nbsp;&nbsp;<span class="kw">this</span>.cena = other.cena;&nbsp;&nbsp;<span class="kw">this</span>.ilosc = other.ilosc;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dataWaznosci = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(other.dataWaznosci); <span class="cm">// głęboka kopia!</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;countStatic_++;&nbsp;&nbsp;<span class="kw">this</span>.idNonStatic_ = countStatic_;<br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">Produkt</span>(<span class="cl">Produkt</span> inny) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = inny.nazwa;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.cena = inny.cena;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.data = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(inny.data);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">nadajId</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Skopiowano produkt: "</span> + nazwa);<br>
 &nbsp;&nbsp;}<br><br>
-&nbsp;&nbsp;<span class="cm">// ── 6.0: wyświetl wszystkie pola ─────────────────────────────────────</span><br>
-&nbsp;&nbsp;<span class="kw">void</span> <span class="fn">wyswietl</span>() {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"=== Towar [ID="</span> + idNonStatic_ + <span class="str">"] ==="</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Nazwa:         "</span> + nazwa);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Cena:          "</span> + cena + <span class="str">" zł"</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Ilość:         "</span> + ilosc + <span class="str">" szt."</span>);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Data ważności: "</span> + dataWaznosci);<br>
+&nbsp;&nbsp;<span class="kw">private void</span> <span class="fn">nadajId</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;licznikWszystkich++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.idProduktu = licznikWszystkich;<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="kw">public void</span> <span class="fn">wyswietl</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"ID: "</span> + idProduktu + <span class="str">" | Nazwa: "</span> + nazwa + <span class="str">" | Cena: "</span> + cena<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="str">" | Ważność: "</span> + data.dzien + <span class="str">"."</span> + data.miesiac + <span class="str">"."</span> + data.rok);<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="kw">public static int</span> <span class="fn">podajLicznik</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> licznikWszystkich;<br>
 &nbsp;&nbsp;}<br>
 }
       </div>
@@ -736,52 +724,48 @@
 
     <hr class="modal-divider">
     <div class="part-banner part-green">
-      <p>🏪 CZĘŚĆ 4 — Sklep.java + wyjaśnienia (6.0 użycie, 6.1)</p>
+      <p>🏪 CZĘŚĆ 4 — Sklep.java</p>
       <p>Klasa główna z main — obiekty osobno, tablica, ArrayList i pole statyczne.</p>
     </div>
     <div class="modal-step">
       <h4><span class="num">4</span> Sklep.java</h4>
       <span class="file-label green">📄 Sklep.java</span>
       <div class="code-block" style="font-size:11.5px;line-height:1.7;">
-<span class="kw">import</span> java.util.*;<br><br>
+<span class="kw">import</span> java.util.<span class="cl">ArrayList</span>;<br><br>
 <span class="kw">public class</span> <span class="cl">Sklep</span> {<br>
 &nbsp;&nbsp;<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.0: obiekty stworzone "osobno" ─────────────────────────────</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span> itemBlad = <span class="kw">new</span> <span class="cl">Towar</span>();&nbsp;&nbsp;<span class="cm">// konstruktor domyślny</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span> itemPomidor = <span class="kw">new</span> <span class="cl">Towar</span>(<span class="str">"Pomidor"</span>, <span class="num-lit">2.99</span>, <span class="num-lit">100</span>,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">20</span>, <span class="num-lit">4</span>, <span class="num-lit">2026</span>)); <span class="cm">// z parametrami</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span> itemPomidorGalazka = <span class="kw">new</span> <span class="cl">Towar</span>(itemPomidor); <span class="cm">// kopiujący</span><br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;itemBlad.<span class="fn">wyswietl</span>();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;itemPomidor.<span class="fn">wyswietl</span>();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;itemPomidorGalazka.<span class="fn">wyswietl</span>();<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.0: tablica ────────────────────────────────────────────────</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span>[] tab = <span class="kw">new</span> <span class="cl">Towar</span>[<span class="num-lit">3</span>];<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Po new Towar[3]: tab[0] == null</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// System.out.println(tab[0]) → "null" (nie crashuje)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// tab[0].wyswietl()           → NullPointerException!</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Arrays</span>.<span class="fn">fill</span>(tab, <span class="kw">new</span> <span class="cl">Towar</span>(<span class="str">"Marchew"</span>, <span class="num-lit">1.50</span>, <span class="num-lit">50</span>,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">15</span>, <span class="num-lit">5</span>, <span class="num-lit">2026</span>))); <span class="cm">// ⚠ 3× ta sama referencja!</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">Towar</span> t : tab) t.<span class="fn">wyswietl</span>();<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.0: kolekcja ───────────────────────────────────────────────</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">ArrayList</span>&lt;<span class="cl">Towar</span>&gt; list = <span class="kw">new</span> <span class="cl">ArrayList</span>&lt;<span class="cl">Towar</span>&gt;();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;list.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Towar</span>());&nbsp;&nbsp;<span class="cm">// domyślny</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;list.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Towar</span>(<span class="str">"Jabłko"</span>, <span class="num-lit">3.20</span>, <span class="num-lit">200</span>,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">10</span>, <span class="num-lit">6</span>, <span class="num-lit">2026</span>))); <span class="cm">// z parametrami</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;list.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Towar</span>(itemPomidor)); <span class="cm">// kopiujący</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">Towar</span> t : list) t.<span class="fn">wyswietl</span>();<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.1: countStatic_ BEZ użycia obiektu ────────────────────────</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Łącznie stworzono: "</span> + <span class="cl">Towar</span>.<span class="fn">getCount</span>() + <span class="str">" towarów"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"--- 1. OBIEKTY OSOBNO ---"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Produkt</span> p1 = <span class="kw">new</span> <span class="cl">Produkt</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Produkt</span> p2 = <span class="kw">new</span> <span class="cl">Produkt</span>(<span class="str">"Mleko"</span>, <span class="num-lit">3.50</span>, <span class="num-lit">10</span>, <span class="num-lit">12</span>, <span class="num-lit">2024</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Produkt</span> p3 = <span class="kw">new</span> <span class="cl">Produkt</span>(p2);<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;p1.<span class="fn">wyswietl</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;p2.<span class="fn">wyswietl</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;p3.<span class="fn">wyswietl</span>();<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"\n--- 2. TABLICA ---"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Produkt</span>[] tablica = <span class="kw">new</span> <span class="cl">Produkt</span>[<span class="num-lit">3</span>];<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num-lit">0</span>; i &lt; tablica.length; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tablica[i] = <span class="kw">new</span> <span class="cl">Produkt</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"\n--- 3. KOLEKCJA ARRAYLIST ---"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">ArrayList</span>&lt;<span class="cl">Produkt</span>&gt; lista = <span class="kw">new</span> <span class="cl">ArrayList</span>&lt;&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lista.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Produkt</span>(<span class="str">"Chleb"</span>, <span class="num-lit">4.00</span>, <span class="num-lit">15</span>, <span class="num-lit">1</span>, <span class="num-lit">2024</span>));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lista.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Produkt</span>(<span class="str">"Ser"</span>, <span class="num-lit">6.50</span>, <span class="num-lit">20</span>, <span class="num-lit">1</span>, <span class="num-lit">2024</span>));<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">Produkt</span> p : lista) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.<span class="fn">wyswietl</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"\n--- 4. POLA STATYCZNE ---"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Łącznie stworzono produktów: "</span> + <span class="cl">Produkt</span>.<span class="fn">podajLicznik</span>());<br>
 &nbsp;&nbsp;}<br>
 }
       </div>
     </div>
     <div class="modal-step">
-      <h4><span class="num" style="background:#16a34a;">5</span> Wyjaśnienie — static vs niestatyczne (6.1 + 6.3)</h4>
+      <h4><span class="num" style="background:#16a34a;">5</span> Wyjaśnienie — static vs niestatyczne</h4>
       <div class="code-block" style="font-size:11.5px;line-height:1.9;">
-<span style="color:#4ade80;">✓ countStatic_</span>  &nbsp;static &nbsp;→ jedno pole dla WSZYSTKICH obiektów → poprawnie liczy sumę<br>
-<span style="color:#f87171;">✗ countNonStatic_</span> instance → każdy obiekt ma WŁASNĄ kopię (zawsze = 1) → nie działa<br><br>
-<span style="color:#4ade80;">✓ idNonStatic_</span>  &nbsp;instance → własna kopia = przypisany ID zachowany w obiekcie → działa<br>
-<span style="color:#f87171;">✗ idStatic_</span>     &nbsp;static &nbsp;→ wszyscy widzą tę samą wartość (ostatnią) → nie daje unikalnych ID
+<span style="color:#4ade80;">✓ licznikWszystkich</span>  static &nbsp;→ jedno pole dla WSZYSTKICH obiektów → poprawnie liczy sumę<br>
+<span style="color:#f87171;">✗ pole instancyjne</span>   instance → każdy obiekt ma WŁASNĄ kopię (zawsze = 1) → nie działa jako licznik<br><br>
+<span style="color:#4ade80;">✓ idProduktu</span>  &nbsp;instance → własna kopia = przypisany ID zachowany w obiekcie → działa<br>
+<span style="color:#f87171;">✗ pole statyczne</span>  &nbsp;static &nbsp;→ wszyscy widzą tę samą wartość (ostatnią) → nie daje unikalnych ID
       </div>
     </div>
   </div>
