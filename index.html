@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JavaLab — Kurs programowania w Javie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --text: #111827;
+      --text-secondary: #374151;
+      --text-muted: #6b7280;
+      --text-subtle: #9ca3af;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-light: #eff6ff;
+      --accent-text: #1d4ed8;
+      --green: #16a34a;
+      --red: #dc2626;
+      --code-bg: #151619;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ─── APP SHELL ─── */
+    .app { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      width: 272px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s ease;
+      overflow: hidden;
+    }
+    .sidebar.collapsed { width: 0; }
+
+    .sidebar-header {
+      padding: 18px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 17px;
+      flex-shrink: 0; cursor: pointer; user-select: none;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .logo-icon:hover { background: var(--accent-hover); }
+    .logo-text {
+      font-size: 16px; font-weight: 600; color: var(--text);
+      letter-spacing: -0.2px; white-space: nowrap;
+      cursor: pointer; user-select: none;
+    }
+
+    .sidebar-body { flex: 1; overflow-y: auto; padding: 10px 8px; }
+
+    .sidebar-section-label {
+      padding: 10px 10px 4px;
+      font-size: 10px; font-weight: 700;
+      color: var(--text-subtle);
+      text-transform: uppercase; letter-spacing: 1.2px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s;
+      border: none; background: none; width: 100%; text-align: left;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .nav-item:hover { background: var(--bg); color: var(--text); }
+    .nav-item.active { background: var(--accent-light); color: var(--accent-text); }
+    .nav-icon { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.7; }
+    .nav-item.active .nav-icon { opacity: 1; }
+
+    /* egg dots in sidebar header */
+    .egg-dots { display: none; }
+
+    /* ─── MAIN ─── */
+    .main {
+      flex: 1; display: flex; flex-direction: column; min-width: 0;
+      background: var(--surface);
+      margin: 8px; border-radius: 18px;
+      box-shadow: var(--shadow); border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    .main-header {
+      height: 58px; border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: none; border-radius: var(--radius-sm);
+      color: var(--text-muted); cursor: pointer; transition: background 0.15s;
+    }
+    .icon-btn:hover { background: var(--bg); color: var(--text); }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .breadcrumb .current { font-weight: 500; color: var(--text); }
+    .breadcrumb-arrow { width: 13px; height: 13px; }
+
+    .ai-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s;
+      border: none; background: var(--bg); color: var(--text-secondary);
+    }
+    .ai-btn:hover { background: var(--border); }
+    .ai-btn.active { background: var(--accent-light); color: var(--accent-text); }
+
+    /* ─── CONTENT ─── */
+    .content-area { flex: 1; overflow-y: auto; padding: 40px 48px 60px; }
+    @media (max-width: 900px) { .content-area { padding: 24px 20px 40px; } }
+    .lesson-content { max-width: 720px; margin: 0 auto; }
+
+    /* ─── MARKDOWN BODY (like JavaMaster) ─── */
+    .markdown-body h1 {
+      font-size: 28px; font-weight: 700; color: var(--text);
+      margin-bottom: 20px; letter-spacing: -0.8px; line-height: 1.2;
+    }
+    .markdown-body h2 {
+      font-size: 19px; font-weight: 600; color: var(--text);
+      margin-top: 32px; margin-bottom: 12px; letter-spacing: -0.3px;
+    }
+    .markdown-body h3 {
+      font-size: 15px; font-weight: 600; color: var(--text-secondary);
+      margin-top: 20px; margin-bottom: 8px;
+    }
+    .markdown-body p {
+      font-size: 14px; color: var(--text-muted);
+      line-height: 1.75; margin-bottom: 14px;
+    }
+    .markdown-body pre {
+      background: var(--code-bg); color: #e2e8f0;
+      padding: 18px 20px; border-radius: var(--radius);
+      overflow-x: auto; margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      line-height: 1.7; box-shadow: var(--shadow);
+    }
+    .markdown-body code {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg); color: var(--accent-text);
+      padding: 1px 6px; border-radius: 4px;
+      font-size: 12.5px; border: 1px solid var(--border);
+    }
+    .markdown-body pre code {
+      background: transparent; color: #e2e8f0;
+      padding: 0; border: none; font-size: 13px;
+    }
+    .markdown-body ul {
+      list-style: disc; padding-left: 22px;
+      margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .markdown-body ol {
+      list-style: decimal; padding-left: 22px;
+      margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .markdown-body li { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+    .markdown-body strong { font-weight: 600; color: var(--text-secondary); }
+
+    /* ─── RICH HTML LESSON STYLES ─── */
+    .lesson-title-row {
+      margin-bottom: 24px;
+    }
+    .lesson-title-row h1 {
+      font-size: 28px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 10px;
+    }
+    .lesson-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px;
+    }
+    .tag-blue { background: var(--accent-light); color: var(--accent-text); }
+    .tag-green { background: #f0fdf4; color: #15803d; }
+    .tag-yellow { background: #fefce8; color: #a16207; }
+    .tag-gray { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+    .lead {
+      font-size: 15px; color: var(--text-muted); line-height: 1.7;
+      margin-bottom: 28px; border-left: 3px solid var(--accent-light);
+      padding-left: 14px;
+    }
+
+    .section-h2 {
+      font-size: 18px; font-weight: 600; color: var(--text);
+      margin: 28px 0 12px; letter-spacing: -0.3px;
+    }
+
+    .cards-3 {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 10px; margin-bottom: 20px;
+    }
+    .card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .card:hover { border-color: #bfdbfe; box-shadow: var(--shadow-md); }
+    .card-icon { font-size: 20px; margin-bottom: 9px; }
+    .card h4 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+    .card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .card p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; background: var(--accent-light);
+      color: var(--accent-text); padding: 1px 4px; border-radius: 3px;
+    }
+
+    .code-wrap {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; margin: 12px 0; box-shadow: var(--shadow);
+    }
+    .code-header {
+      background: #f8f9fa; padding: 7px 14px;
+      display: flex; align-items: center; gap: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .code-filename { font-size: 11px; color: var(--text-muted); margin-left: 4px; font-family: 'JetBrains Mono', monospace; }
+    .code-block {
+      padding: 16px 18px;
+      font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+      line-height: 1.8; overflow-x: auto;
+      background: var(--code-bg); color: #e2e8f0;
+    }
+    .kw  { color: #c792ea; }
+    .cl  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .cm  { color: #4a5568; }
+    .fn  { color: #82d9e0; }
+    .num-lit { color: #f78c6c; }
+    .ann { color: #ffcb6b; }
+
+    .code-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 780px) { .code-grid-2 { grid-template-columns: 1fr; } }
+
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .checklist li::before {
+      content: '✓'; color: var(--accent); font-weight: 700;
+      font-size: 11px; margin-top: 2px; flex-shrink: 0;
+    }
+    .checklist li code {
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+      background: var(--accent-light); color: var(--accent-text);
+      padding: 1px 5px; border-radius: 3px;
+    }
+
+    .curriculum { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+    .lesson-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .lesson-row:hover { border-color: #bfdbfe; background: var(--accent-light); }
+    .lesson-num {
+      width: 24px; height: 24px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .ln-blue { background: var(--accent-light); color: var(--accent); border: 1px solid #bfdbfe; }
+    .ln-green { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
+    .lesson-row-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); flex: 1; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; gap: 20px; } }
+
+    .data-table {
+      width: 100%; border-collapse: collapse; font-size: 12.5px;
+      margin: 14px 0; background: var(--surface);
+      border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);
+    }
+    .data-table th {
+      text-align: left; padding: 8px 12px; color: var(--text-subtle);
+      font-weight: 600; background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); color: var(--text-muted); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table td code {
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+      background: var(--bg); color: var(--text-secondary);
+      padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border);
+    }
+    .ok  { color: var(--green); font-weight: 600; }
+    .inf { color: var(--accent); font-weight: 600; }
+
+    .note-block {
+      background: var(--accent-light); border: 1px solid #bfdbfe;
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm); padding: 13px 16px; margin: 14px 0;
+    }
+    .note-block .note-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .note-block .note-head code {
+      font-family: 'JetBrains Mono', monospace; color: var(--accent-text);
+      font-size: 12px; font-weight: 700;
+      background: none; border: none; padding: 0;
+    }
+    .note-badge {
+      background: var(--accent); color: #fff;
+      font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+    }
+    .note-block p { font-size: 13px; color: var(--text-secondary); }
+    .note-block p code {
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+      background: rgba(37,99,235,0.1); color: var(--accent-text);
+      padding: 1px 5px; border-radius: 3px; border: none;
+    }
+
+    .faq { display: flex; flex-direction: column; gap: 2px; }
+    .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .faq-q {
+      padding: 12px 15px; font-size: 13px; font-weight: 500;
+      color: var(--text-secondary); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      user-select: none; transition: background 0.15s;
+    }
+    .faq-q code {
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+      background: var(--bg); color: var(--text-secondary);
+      padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border);
+    }
+    .faq-q:hover { background: var(--bg); }
+    .faq-item.open .faq-q { background: var(--accent-light); color: var(--accent-text); }
+    .faq-q .arrow { color: var(--text-subtle); font-size: 13px; transition: transform 0.2s; flex-shrink: 0; margin-left: 8px; }
+    .faq-item.open .faq-q .arrow { transform: rotate(180deg); color: var(--accent); }
+    .faq-a {
+      display: none; padding: 11px 15px;
+      font-size: 13px; color: var(--text-muted); line-height: 1.7;
+      border-top: 1px solid var(--border);
+    }
+    .faq-a code {
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+      background: var(--bg); color: var(--text-secondary);
+      padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border);
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ─── LESSON NAV ─── */
+    .lesson-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--border-light);
+    }
+    .nav-btn {
+      padding: 9px 18px; font-size: 13px; font-weight: 500;
+      border-radius: 10px; border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.15s;
+      background: var(--bg); color: var(--text-muted); font-family: inherit;
+    }
+    .nav-btn:hover { background: var(--border); color: var(--text); }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .nav-btn.primary {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+    .nav-btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .nav-btn.primary:disabled { background: var(--accent); border-color: var(--accent); }
+
+    /* ─── AI PANEL ─── */
+    .ai-panel {
+      width: 340px; flex-shrink: 0; display: flex; flex-direction: column;
+      background: var(--surface); border-left: 1px solid var(--border);
+      transition: width 0.3s ease; overflow: hidden;
+      margin: 8px 8px 8px 0; border-radius: 18px;
+    }
+    .ai-panel.collapsed { width: 0; margin: 8px 0 8px 0; border: none; }
+    .ai-header {
+      padding: 13px 15px; border-bottom: 1px solid var(--border);
+      background: #f8f9fa; display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .ai-header h3 { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .ai-messages { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+    .ai-msg { display: flex; gap: 8px; }
+    .ai-msg.user { flex-direction: row-reverse; }
+    .ai-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; flex-shrink: 0;
+    }
+    .ai-avatar.bot { background: #f3f4f6; }
+    .ai-avatar.usr { background: var(--accent-light); }
+    .ai-bubble {
+      max-width: 80%; padding: 8px 12px; border-radius: 14px;
+      font-size: 12.5px; line-height: 1.6;
+    }
+    .ai-bubble.bot { background: #f3f4f6; color: var(--text-secondary); }
+    .ai-bubble.usr { background: var(--accent); color: #fff; }
+    .ai-input-wrap { padding: 11px; border-top: 1px solid var(--border); background: var(--surface); }
+    .ai-input {
+      width: 100%; padding: 9px 38px 9px 13px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; font-size: 12.5px; font-family: inherit;
+      color: var(--text); outline: none; opacity: 0.6; cursor: not-allowed;
+    }
+    .ai-input-inner { position: relative; }
+    .ai-send {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--accent);
+      cursor: not-allowed; opacity: 0.4; display: flex; align-items: center;
+    }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+      z-index: 1000; justify-content: center; align-items: flex-start;
+      padding: 28px 16px; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 30px; max-width: 780px; width: 100%;
+      position: relative; animation: popIn 0.2s ease;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    @keyframes popIn { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-close {
+      position: absolute; top: 13px; right: 13px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text-muted); font-size: 18px; cursor: pointer;
+      width: 30px; height: 30px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .modal-close:hover { background: var(--border); color: var(--text); }
+    .modal-title { font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 3px; letter-spacing: -0.4px; }
+    .modal-title .accent { color: var(--accent); }
+    .modal .subtitle { color: var(--text-muted); font-size: 12.5px; margin-bottom: 22px; }
+    .modal-step { margin-bottom: 18px; }
+    .modal-step h4 {
+      color: var(--text); font-size: 13px; font-weight: 600;
+      margin-bottom: 7px; display: flex; align-items: center; gap: 8px;
+    }
+    .modal-step h4 .num {
+      background: var(--accent); color: #fff; font-weight: 800; font-size: 10px;
+      min-width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .modal-step p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 6px; line-height: 1.6; }
+    .modal-step p code {
+      font-family: 'JetBrains Mono', monospace; background: var(--bg);
+      color: var(--text-secondary); padding: 1px 5px; border-radius: 4px;
+      font-size: 11.5px; border: 1px solid var(--border);
+    }
+    .modal-step strong { font-weight: 600; color: var(--text); }
+    .modal-step .code-block { font-size: 11.5px; line-height: 1.7; padding: 12px 15px; border-radius: var(--radius-sm); margin: 5px 0; }
+    .file-label {
+      display: inline-block; background: var(--bg); color: var(--accent-text);
+      font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      padding: 2px 8px; border-radius: 4px; margin-bottom: 5px; border: 1px solid var(--border);
+    }
+    .file-label.green { color: var(--green); }
+    .part-banner { border-radius: var(--radius-sm); padding: 11px 15px; margin-bottom: 18px; }
+    .part-orange { background: var(--accent-light); border: 1px solid #bfdbfe; }
+    .part-orange p:first-child { color: var(--accent-text); font-weight: 700; font-size: 13px; margin: 0; }
+    .part-blue { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .part-blue p:first-child { color: #15803d; font-weight: 700; font-size: 13px; margin: 0; }
+    .part-green { background: #fefce8; border: 1px solid #fde68a; }
+    .part-green p:first-child { color: #a16207; font-weight: 700; font-size: 13px; margin: 0; }
+    .part-banner p:last-child { color: var(--text-muted); font-size: 11.5px; margin-top: 2px; }
+    .modal-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0 16px; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon" id="logoIcon">J</div>
+      <span class="logo-text" id="logoText">JavaLab</span>
+      <div class="egg-dots" id="eggDots">
+        <div class="egg-dot"></div><div class="egg-dot"></div><div class="egg-dot"></div>
+        <div class="egg-dot"></div><div class="egg-dot"></div>
+      </div>
+    </div>
+    <div class="sidebar-body">
+      <div class="sidebar-section-label">Podstawy</div>
+      <button class="nav-item active" data-id="0" onclick="switchLesson(0)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        1. Wprowadzenie do Java
+      </button>
+      <button class="nav-item" data-id="1" onclick="switchLesson(1)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        2. Zmienne i typy danych
+      </button>
+      <button class="nav-item" data-id="2" onclick="switchLesson(2)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        3. Instrukcje warunkowe
+      </button>
+      <button class="nav-item" data-id="3" onclick="switchLesson(3)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        4. Pętle
+      </button>
+      <button class="nav-item" data-id="4" onclick="switchLesson(4)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        5. Tablice
+      </button>
+      <button class="nav-item" data-id="5" onclick="switchLesson(5)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        6. Metody
+      </button>
+      <button class="nav-item" data-id="6" onclick="switchLesson(6)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5h6M5 11h4"/></svg>
+        7. Programowanie Obiektowe
+      </button>
+
+      <div class="sidebar-section-label" style="margin-top:6px;">Zaawansowane</div>
+      <button class="nav-item" data-id="7" onclick="switchLesson(7)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4M9 12h3"/></svg>
+        Generics
+      </button>
+      <button class="nav-item" data-id="8" onclick="switchLesson(8)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4M9 12h3"/></svg>
+        Lambdy i interfejsy funkcyjne
+      </button>
+      <button class="nav-item" data-id="9" onclick="switchLesson(9)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4M9 12h3"/></svg>
+        Stream API
+      </button>
+      <button class="nav-item" data-id="10" onclick="switchLesson(10)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4M9 12h3"/></svg>
+        Optional
+      </button>
+      <button class="nav-item" data-id="11" onclick="switchLesson(11)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 5v.5"/></svg>
+        FAQ
+      </button>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    <header class="main-header">
+      <div class="header-left">
+        <button class="icon-btn" onclick="toggleSidebar()">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M2 4h13M2 8.5h13M2 13h13"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <span>Kurs Javy</span>
+          <svg class="breadcrumb-arrow" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 2.5l4 4-4 4"/></svg>
+          <span class="current" id="breadcrumbText">1. Wprowadzenie do Java</span>
+        </div>
+      </div>
+      <button class="ai-btn" id="aiBtn" onclick="toggleAI()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="12" height="10" rx="2"/><path d="M4 6h6M4 9h4"/></svg>
+        AI Nauczyciel
+      </button>
+    </header>
+    <div class="content-area" id="contentArea"></div>
+  </main>
+
+  <!-- ─── AI PANEL ─── -->
+  <aside class="ai-panel collapsed" id="aiPanel">
+    <div class="ai-header">
+      <div class="ai-dot"></div>
+      <h3>AI Nauczyciel Javy</h3>
+    </div>
+    <div class="ai-messages">
+      <div class="ai-msg">
+        <div class="ai-avatar bot">🤖</div>
+        <div class="ai-bubble bot">Funkcja AI Nauczyciela nie została jeszcze wprowadzona. Pracujemy nad tym!</div>
+      </div>
+    </div>
+    <div class="ai-input-wrap">
+      <div class="ai-input-inner">
+        <input class="ai-input" type="text" placeholder="Funkcja niedostępna..." disabled>
+        <button class="ai-send" disabled>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6.5h9M7 2l4.5 4.5L7 11"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- ─── MODAL ─── -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">🔓 Pełne rozwiązanie — <span class="accent">krok po kroku</span></div>
+    <p class="subtitle">Znalazłeś easter egga! Lab 6A — konstruktory, pola statyczne, kompozycja i modyfikatory dostępu.</p>
+
+    <div class="part-banner part-orange">
+      <p>📦 CZĘŚĆ 1 — Struktura projektu</p>
+      <p>Trzy pliki w tym samym pakiecie (domyślnym lub własnym).</p>
+    </div>
+    <div class="modal-step">
+      <h4><span class="num">1</span> Utwórz projekt i pliki</h4>
+      <p>W IntelliJ: <strong>File → New → Project → Java</strong>. W folderze <code>src</code> utwórz trzy pliki:</p>
+      <div class="code-block" style="line-height:1.9;">
+<span style="color:#82aaff;">📁 src</span><br>
+&nbsp;├── <span style="color:#c3e88d;">📄 DataWaznosci.java</span> &nbsp;<span style="color:#6b7280;">// klasa dodatkowa — kompozycja (6.2)</span><br>
+&nbsp;├── <span style="color:#c3e88d;">📄 Towar.java</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7280;">// klasa poboczna (6.0 – 6.3)</span><br>
+&nbsp;└── <span style="color:#c3e88d;">📄 Sklep.java</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7280;">// klasa główna z main()</span>
+      </div>
+    </div>
+
+    <hr class="modal-divider">
+    <div class="part-banner part-blue">
+      <p>📅 CZĘŚĆ 2 — DataWaznosci.java (zadanie 6.2)</p>
+      <p>Klasa w kompozycji z Towar — data ważności nierozłączna od towaru.</p>
+    </div>
+    <div class="modal-step">
+      <h4><span class="num">2</span> DataWaznosci.java</h4>
+      <p>Klasa <strong>package-private</strong> (bez <code>public</code>) — spełnia wymóg 6.3: niewidoczna spoza pakietu.</p>
+      <span class="file-label">📄 DataWaznosci.java</span>
+      <div class="code-block" style="font-size:11.5px;line-height:1.7;">
+<span class="cm">// 6.3: brak public → package-private (niewidoczna spoza pakietu)</span><br>
+<span class="kw">class</span> <span class="cl">DataWaznosci</span> {<br>
+&nbsp;&nbsp;<span class="kw">private int</span> dzien, miesiac, rok;<br><br>
+&nbsp;&nbsp;<span class="cl">DataWaznosci</span>(<span class="kw">int</span> dzien, <span class="kw">int</span> miesiac, <span class="kw">int</span> rok) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[DataWaznosci] konstruktor: "</span> + dzien + <span class="str">"/"</span> + miesiac + <span class="str">"/"</span> + rok);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dzien = dzien;&nbsp;&nbsp;<span class="kw">this</span>.miesiac = miesiac;&nbsp;&nbsp;<span class="kw">this</span>.rok = rok;<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cm">// konstruktor kopiujący — głęboka kopia dla kompozycji</span><br>
+&nbsp;&nbsp;<span class="cl">DataWaznosci</span>(<span class="cl">DataWaznosci</span> other) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[DataWaznosci] konstruktor kopiujący"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dzien = other.dzien;&nbsp;&nbsp;<span class="kw">this</span>.miesiac = other.miesiac;&nbsp;&nbsp;<span class="kw">this</span>.rok = other.rok;<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="ann">@Override</span><br>
+&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">String</span> <span class="fn">toString</span>() { <span class="kw">return</span> dzien + <span class="str">"/"</span> + miesiac + <span class="str">"/"</span> + rok; }<br>
+}
+      </div>
+    </div>
+
+    <hr class="modal-divider">
+    <div class="part-banner part-orange">
+      <p>🛒 CZĘŚĆ 3 — Towar.java (zadania 6.0, 6.1, 6.2, 6.3)</p>
+      <p>Konstruktory, pola statyczne/niestatyczne, kompozycja i private.</p>
+    </div>
+    <div class="modal-step">
+      <h4><span class="num">3</span> Towar.java</h4>
+      <span class="file-label">📄 Towar.java</span>
+      <div class="code-block" style="font-size:11.5px;line-height:1.7;">
+<span class="kw">import</span> java.util.*;<br><br>
+<span class="cm">// 6.3: package-private (bez public) — Towar niewidoczny spoza pakietu</span><br>
+<span class="kw">class</span> <span class="cl">Towar</span> {<br><br>
+&nbsp;&nbsp;<span class="cm">// ── 6.1: pola statyczne i niestatyczne ──────────────────────────────</span><br>
+&nbsp;&nbsp;<span class="cm">// ✓ static: jedno pole dla WSZYSTKICH obiektów → liczy sumę stworzonych</span><br>
+&nbsp;&nbsp;<span class="kw">private static int</span> countStatic_ = <span class="num-lit">0</span>;<br>
+&nbsp;&nbsp;<span class="cm">// ✗ countNonStatic_: każdy obiekt ma własną kopię (zawsze = 1) — wykomentowane</span><br>
+&nbsp;&nbsp;<span class="cm">// public int countNonStatic_ = 0;</span><br><br>
+&nbsp;&nbsp;<span class="cm">// ✓ instance: własna kopia w każdym obiekcie → unikalny ID zachowany</span><br>
+&nbsp;&nbsp;<span class="kw">private int</span> idNonStatic_;<br>
+&nbsp;&nbsp;<span class="cm">// ✗ idStatic_: wszyscy widzą tę samą wartość (ostatnią) — wykomentowane</span><br>
+&nbsp;&nbsp;<span class="cm">// public static int idStatic_ = 0;</span><br><br>
+&nbsp;&nbsp;<span class="cm">// ── 6.3: private — dostęp tylko wewnątrz klasy Towar ────────────────</span><br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="cl">String</span> nazwa;<br>
+&nbsp;&nbsp;<span class="kw">private double</span> cena;<br>
+&nbsp;&nbsp;<span class="kw">private int</span> ilosc;<br>
+&nbsp;&nbsp;<span class="kw">private</span> <span class="cl">DataWaznosci</span> dataWaznosci; <span class="cm">// 6.2: kompozycja</span><br><br>
+&nbsp;&nbsp;<span class="cm">// 6.3: getter — Sklep może ODCZYTAĆ countStatic_, nie może go zmienić</span><br>
+&nbsp;&nbsp;<span class="kw">static int</span> <span class="fn">getCount</span>() { <span class="kw">return</span> countStatic_; }<br><br>
+&nbsp;&nbsp;<span class="cm">// ── 6.0: konstruktor domyślny ────────────────────────────────────────</span><br>
+&nbsp;&nbsp;<span class="cl">Towar</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[Towar] konstruktor domyślny"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = <span class="str">"ERROR"</span>;&nbsp;&nbsp;<span class="kw">this</span>.cena = -<span class="num-lit">1</span>;&nbsp;&nbsp;<span class="kw">this</span>.ilosc = -<span class="num-lit">1</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dataWaznosci = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">1</span>, <span class="num-lit">1</span>, <span class="num-lit">1970</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;countStatic_++;&nbsp;&nbsp;<span class="kw">this</span>.idNonStatic_ = countStatic_;<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cm">// ── 6.0: konstruktor z parametrami ──────────────────────────────────</span><br>
+&nbsp;&nbsp;<span class="cl">Towar</span>(<span class="cl">String</span> nazwa, <span class="kw">double</span> cena, <span class="kw">int</span> ilosc, <span class="cl">DataWaznosci</span> data) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[Towar] konstruktor z parametrami: "</span> + nazwa);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = nazwa;&nbsp;&nbsp;<span class="kw">this</span>.cena = cena;&nbsp;&nbsp;<span class="kw">this</span>.ilosc = ilosc;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dataWaznosci = data;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;countStatic_++;&nbsp;&nbsp;<span class="kw">this</span>.idNonStatic_ = countStatic_;<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cm">// ── 6.0: konstruktor kopiujący ───────────────────────────────────────</span><br>
+&nbsp;&nbsp;<span class="cl">Towar</span>(<span class="cl">Towar</span> other) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"[Towar] konstruktor kopiujący: "</span> + other.nazwa);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.nazwa = other.nazwa;&nbsp;&nbsp;<span class="kw">this</span>.cena = other.cena;&nbsp;&nbsp;<span class="kw">this</span>.ilosc = other.ilosc;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">this</span>.dataWaznosci = <span class="kw">new</span> <span class="cl">DataWaznosci</span>(other.dataWaznosci); <span class="cm">// głęboka kopia!</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;countStatic_++;&nbsp;&nbsp;<span class="kw">this</span>.idNonStatic_ = countStatic_;<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cm">// ── 6.0: wyświetl wszystkie pola ─────────────────────────────────────</span><br>
+&nbsp;&nbsp;<span class="kw">void</span> <span class="fn">wyswietl</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"=== Towar [ID="</span> + idNonStatic_ + <span class="str">"] ==="</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Nazwa:         "</span> + nazwa);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Cena:          "</span> + cena + <span class="str">" zł"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Ilość:         "</span> + ilosc + <span class="str">" szt."</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"  Data ważności: "</span> + dataWaznosci);<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+
+    <hr class="modal-divider">
+    <div class="part-banner part-green">
+      <p>🏪 CZĘŚĆ 4 — Sklep.java + wyjaśnienia (6.0 użycie, 6.1)</p>
+      <p>Klasa główna z main — obiekty osobno, tablica, ArrayList i pole statyczne.</p>
+    </div>
+    <div class="modal-step">
+      <h4><span class="num">4</span> Sklep.java</h4>
+      <span class="file-label green">📄 Sklep.java</span>
+      <div class="code-block" style="font-size:11.5px;line-height:1.7;">
+<span class="kw">import</span> java.util.*;<br><br>
+<span class="kw">public class</span> <span class="cl">Sklep</span> {<br>
+&nbsp;&nbsp;<span class="kw">public static void</span> <span class="fn">main</span>(<span class="cl">String</span>[] args) {<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.0: obiekty stworzone "osobno" ─────────────────────────────</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span> itemBlad = <span class="kw">new</span> <span class="cl">Towar</span>();&nbsp;&nbsp;<span class="cm">// konstruktor domyślny</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span> itemPomidor = <span class="kw">new</span> <span class="cl">Towar</span>(<span class="str">"Pomidor"</span>, <span class="num-lit">2.99</span>, <span class="num-lit">100</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">20</span>, <span class="num-lit">4</span>, <span class="num-lit">2026</span>)); <span class="cm">// z parametrami</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span> itemPomidorGalazka = <span class="kw">new</span> <span class="cl">Towar</span>(itemPomidor); <span class="cm">// kopiujący</span><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;itemBlad.<span class="fn">wyswietl</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;itemPomidor.<span class="fn">wyswietl</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;itemPomidorGalazka.<span class="fn">wyswietl</span>();<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.0: tablica ────────────────────────────────────────────────</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Towar</span>[] tab = <span class="kw">new</span> <span class="cl">Towar</span>[<span class="num-lit">3</span>];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Po new Towar[3]: tab[0] == null</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// System.out.println(tab[0]) → "null" (nie crashuje)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// tab[0].wyswietl()           → NullPointerException!</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">Arrays</span>.<span class="fn">fill</span>(tab, <span class="kw">new</span> <span class="cl">Towar</span>(<span class="str">"Marchew"</span>, <span class="num-lit">1.50</span>, <span class="num-lit">50</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">15</span>, <span class="num-lit">5</span>, <span class="num-lit">2026</span>))); <span class="cm">// ⚠ 3× ta sama referencja!</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">Towar</span> t : tab) t.<span class="fn">wyswietl</span>();<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.0: kolekcja ───────────────────────────────────────────────</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">ArrayList</span>&lt;<span class="cl">Towar</span>&gt; list = <span class="kw">new</span> <span class="cl">ArrayList</span>&lt;<span class="cl">Towar</span>&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Towar</span>());&nbsp;&nbsp;<span class="cm">// domyślny</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;list.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Towar</span>(<span class="str">"Jabłko"</span>, <span class="num-lit">3.20</span>, <span class="num-lit">200</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">new</span> <span class="cl">DataWaznosci</span>(<span class="num-lit">10</span>, <span class="num-lit">6</span>, <span class="num-lit">2026</span>))); <span class="cm">// z parametrami</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;list.<span class="fn">add</span>(<span class="kw">new</span> <span class="cl">Towar</span>(itemPomidor)); <span class="cm">// kopiujący</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">Towar</span> t : list) t.<span class="fn">wyswietl</span>();<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── 6.1: countStatic_ BEZ użycia obiektu ────────────────────────</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">System</span>.out.<span class="fn">println</span>(<span class="str">"Łącznie stworzono: "</span> + <span class="cl">Towar</span>.<span class="fn">getCount</span>() + <span class="str">" towarów"</span>);<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </div>
+    <div class="modal-step">
+      <h4><span class="num" style="background:#16a34a;">5</span> Wyjaśnienie — static vs niestatyczne (6.1 + 6.3)</h4>
+      <div class="code-block" style="font-size:11.5px;line-height:1.9;">
+<span style="color:#4ade80;">✓ countStatic_</span>  &nbsp;static &nbsp;→ jedno pole dla WSZYSTKICH obiektów → poprawnie liczy sumę<br>
+<span style="color:#f87171;">✗ countNonStatic_</span> instance → każdy obiekt ma WŁASNĄ kopię (zawsze = 1) → nie działa<br><br>
+<span style="color:#4ade80;">✓ idNonStatic_</span>  &nbsp;instance → własna kopia = przypisany ID zachowany w obiekcie → działa<br>
+<span style="color:#f87171;">✗ idStatic_</span>     &nbsp;static &nbsp;→ wszyscy widzą tę samą wartość (ostatnią) → nie daje unikalnych ID
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── LESSON DATA ─── */
+// JavaMaster lessons (markdown)
+const mdLessons = [
+  {
+    title: '1. Wprowadzenie do Java',
+    md: `# Wprowadzenie do Java
+
+Java to jeden z najpopularniejszych języków programowania na świecie. Został stworzony przez firmę Sun Microsystems (obecnie Oracle) w 1995 roku.
+
+## Dlaczego warto uczyć się Javy?
+* **Niezależność od platformy:** Kod napisany w Javie (skompilowany do tzw. bajtkodu) może być uruchamiany na dowolnym urządzeniu posiadającym Java Virtual Machine (JVM). Zasada "Napisz raz, uruchom wszędzie" (Write Once, Run Anywhere).
+* **Obiektowość:** Java jest językiem w pełni zorientowanym obiektowo, co ułatwia organizację kodu i jego ponowne wykorzystanie.
+* **Ogromny ekosystem:** Tysiące bibliotek, frameworków (np. Spring) i ogromna społeczność.
+
+## Twój pierwszy program
+
+Tradycją jest zaczynanie od programu wypisującego "Hello World". W Javie wygląda to tak:
+
+\`\`\`java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+\`\`\`
+
+**Co tu się dzieje?**
+1. \`public class HelloWorld\` - Każdy program w Javie musi znajdować się w klasie. Nazwa pliku musi być taka sama jak nazwa klasy publicznej (czyli \`HelloWorld.java\`).
+2. \`public static void main(String[] args)\` - To jest punkt wejścia do programu. Od tej metody zaczyna się wykonywanie kodu.
+3. \`System.out.println(...)\` - Instrukcja wypisująca tekst na ekran (do konsoli).`
+  },
+  {
+    title: '2. Zmienne i typy danych',
+    md: `# Zmienne i typy danych
+
+Zmienne to "pudełka" w pamięci komputera, w których przechowujemy dane. Każda zmienna w Javie musi mieć określony typ (Java jest językiem silnie typowanym).
+
+## Podstawowe typy danych (prymitywne)
+
+* \`int\` - liczby całkowite (np. 5, -100, 42)
+* \`double\` - liczby zmiennoprzecinkowe (np. 3.14, -0.5)
+* \`boolean\` - wartości logiczne (\`true\` lub \`false\`)
+* \`char\` - pojedyncze znaki (np. 'A', 'x')
+
+## Deklaracja i inicjalizacja zmiennych
+
+\`\`\`java
+public class Variables {
+    public static void main(String[] args) {
+        // Deklaracja zmiennej typu int
+        int age;
+        // Inicjalizacja (przypisanie wartości)
+        age = 25;
+
+        // Deklaracja i inicjalizacja w jednej linii
+        double price = 19.99;
+        boolean isLearning = true;
+        char grade = 'A';
+
+        System.out.println("Wiek: " + age);
+        System.out.println("Cena: " + price);
+    }
+}
+\`\`\`
+
+## Typ referencyjny: String
+
+\`String\` nie jest typem prymitywnym, lecz obiektowym, ale jest używany tak często, że warto go poznać od razu. Służy do przechowywania tekstu.
+
+\`\`\`java
+String name = "Jan Kowalski";
+System.out.println("Witaj, " + name);
+\`\`\``
+  },
+  {
+    title: '3. Instrukcje warunkowe',
+    md: `# Instrukcje warunkowe (if, else)
+
+Instrukcje warunkowe pozwalają programowi podejmować decyzje na podstawie określonych warunków.
+
+## Instrukcja if-else
+
+Najpopularniejszą instrukcją warunkową jest \`if\`. Jeśli warunek w nawiasach jest prawdziwy (\`true\`), wykona się kod w bloku. W przeciwnym razie może wykonać się kod w bloku \`else\`.
+
+\`\`\`java
+public class Conditions {
+    public static void main(String[] args) {
+        int temperature = 25;
+
+        if (temperature > 30) {
+            System.out.println("Jest bardzo gorąco!");
+        } else if (temperature > 20) {
+            System.out.println("Jest ciepło i przyjemnie.");
+        } else {
+            System.out.println("Jest chłodno.");
+        }
+    }
+}
+\`\`\`
+
+## Operatory logiczne
+
+Aby budować bardziej złożone warunki, używamy operatorów logicznych:
+* \`&&\` (AND - i) - oba warunki muszą być prawdziwe
+* \`||\` (OR - lub) - przynajmniej jeden warunek musi być prawdziwy
+* \`!\` (NOT - nie) - odwraca wartość logiczną
+
+\`\`\`java
+int age = 20;
+boolean hasTicket = true;
+
+if (age >= 18 && hasTicket) {
+    System.out.println("Możesz wejść na koncert.");
+} else {
+    System.out.println("Odmowa wstępu.");
+}
+\`\`\``
+  },
+  {
+    title: '4. Pętle',
+    md: `# Pętle (for, while)
+
+Pętle pozwalają na wielokrotne wykonanie tego samego fragmentu kodu.
+
+## Pętla for
+
+Używamy jej, gdy z góry wiemy, ile razy chcemy wykonać dany kod.
+
+\`\`\`java
+public class Loops {
+    public static void main(String[] args) {
+        // Wypisze liczby od 1 do 5
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("Liczba: " + i);
+        }
+    }
+}
+\`\`\`
+
+Składnia \`for\` składa się z trzech części:
+1. Inicjalizacja (\`int i = 1\`)
+2. Warunek kontynuacji (\`i <= 5\`)
+3. Krok / aktualizacja (\`i++\`, czyli zwiększ o 1)
+
+## Pętla while
+
+Używamy jej, gdy nie wiemy dokładnie ile razy pętla się wykona, ale wiemy pod jakim warunkiem ma działać.
+
+\`\`\`java
+int counter = 3;
+
+while (counter > 0) {
+    System.out.println("Odliczanie: " + counter);
+    counter--; // zmniejsz o 1
+}
+System.out.println("Start!");
+\`\`\``
+  },
+  {
+    title: '5. Tablice',
+    md: `# Tablice (Arrays)
+
+Tablice pozwalają na przechowywanie wielu wartości tego samego typu w jednej zmiennej.
+
+## Tworzenie tablic
+
+\`\`\`java
+public class ArraysExample {
+    public static void main(String[] args) {
+        // Deklaracja i inicjalizacja tablicy z wartościami
+        int[] numbers = {10, 20, 30, 40, 50};
+
+        // Tworzenie pustej tablicy o określonym rozmiarze
+        String[] names = new String[5];
+        names[0] = "Anna";
+        names[1] = "Jan";
+
+        // Dostęp do elementów (indeksy zaczynają się od 0)
+        System.out.println("Pierwsza liczba: " + numbers[0]);
+        System.out.println("Długość tablicy: " + numbers.length);
+    }
+}
+\`\`\`
+
+## Iteracja po tablicy
+
+Najczęściej używamy pętli \`for\` lub \`for-each\`, aby przejść przez wszystkie elementy.
+
+\`\`\`java
+String[] fruits = {"Jabłko", "Banan", "Pomarańcza"};
+
+// Pętla for-each (wygodniejsza)
+for (String fruit : fruits) {
+    System.out.println(fruit);
+}
+\`\`\``
+  },
+  {
+    title: '6. Metody',
+    md: `# Metody (Funkcje)
+
+Metody to bloki kodu, które wykonują określone zadanie i mogą być wywoływane wielokrotnie. Pomagają w organizacji kodu i unikaniu powtórzeń.
+
+## Definiowanie i wywoływanie metod
+
+\`\`\`java
+public class MethodsExample {
+
+    // Metoda, która nie zwraca wartości (void) i przyjmuje jeden parametr
+    public static void greetUser(String name) {
+        System.out.println("Witaj, " + name + "!");
+    }
+
+    // Metoda, która zwraca wartość (int) i przyjmuje dwa parametry
+    public static int addNumbers(int a, int b) {
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+        greetUser("Kamil");
+
+        int sum = addNumbers(5, 10);
+        System.out.println("Suma wynosi: " + sum);
+    }
+}
+\`\`\``
+  },
+  {
+    title: '7. Programowanie Obiektowe',
+    md: `# Programowanie Obiektowe (OOP) - Wstęp
+
+Java jest językiem obiektowym. Opiera się na koncepcji "klas" i "obiektów".
+
+* **Klasa** to szablon / projekt (np. projekt samochodu).
+* **Obiekt** to konkretna instancja klasy (np. konkretny czerwony samochód).
+
+## Tworzenie Klasy i Obiektu
+
+\`\`\`java
+// Definicja klasy
+class Car {
+    // Pola (atrybuty)
+    String brand;
+    String color;
+    int year;
+
+    // Metoda
+    void startEngine() {
+        System.out.println("Silnik w " + brand + " został uruchomiony.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Tworzenie obiektu (instancji klasy Car)
+        Car myCar = new Car();
+
+        // Ustawianie wartości pól
+        myCar.brand = "Toyota";
+        myCar.color = "Czerwony";
+        myCar.year = 2022;
+
+        // Wywołanie metody na obiekcie
+        myCar.startEngine();
+    }
+}
+\`\`\``
+  }
+];
+
+// java-nauka advanced lessons (HTML)
+const htmlLessons = [
+  {
+    title: 'Generics',
+    html: `
+<div class="lesson-title-row"><h1>Generics — kod wielokrotnego użytku</h1>
+<div class="lesson-tags"><span class="tag tag-blue">Typy generyczne</span><span class="tag tag-gray">Java 5+</span></div></div>
+<div class="lead">Generics pozwalają pisać klasy i metody które działają dla dowolnego typu — a kompilator sprawdza poprawność typów już na etapie kompilacji, nie w runtime.</div>
+<div class="cards-3">
+  <div class="card"><div class="card-icon">📦</div><h4>Klasa generyczna</h4><p>Parametr <code>&lt;T&gt;</code> zastępuje konkretny typ. Kompilator podstawia go przy każdym użyciu — <code>Box&lt;String&gt;</code>, <code>Box&lt;Integer&gt;</code> to różne typy w czasie kompilacji.</p></div>
+  <div class="card"><div class="card-icon">🔒</div><h4>Ograniczenia (bounds)</h4><p><code>&lt;T extends Comparable&lt;T&gt;&gt;</code> — T musi implementować Comparable. Dzięki temu możesz wywołać <code>compareTo()</code> wewnątrz metody generycznej.</p></div>
+  <div class="card"><div class="card-icon">🃏</div><h4>Wildcards</h4><p><code>? extends Number</code> — cokolwiek co rozszerza Number (tylko odczyt). <code>? super Integer</code> — cokolwiek co jest nad Integer (zapis).</p></div>
+</div>
+<div class="code-grid-2">
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Box&lt;T&gt; — klasa generyczna</span></div>
+  <div class="code-block"><span class="kw">public class</span> <span class="cl">Box</span>&lt;<span class="cl">T</span>&gt; {<br>&nbsp;&nbsp;<span class="kw">private</span> <span class="cl">T</span> value;<br><br>&nbsp;&nbsp;<span class="kw">public</span> <span class="fn">Box</span>(<span class="cl">T</span> value) { <span class="kw">this</span>.value = value; }<br>&nbsp;&nbsp;<span class="kw">public</span> <span class="cl">T</span> <span class="fn">get</span>() { <span class="kw">return</span> value; }<br><br>&nbsp;&nbsp;<span class="kw">public</span> &lt;<span class="cl">R</span>&gt; <span class="cl">Box</span>&lt;<span class="cl">R</span>&gt; <span class="fn">map</span>(<span class="cl">Function</span>&lt;<span class="cl">T</span>,<span class="cl">R</span>&gt; fn) {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return new</span> <span class="cl">Box</span>&lt;&gt;(fn.<span class="fn">apply</span>(value));<br>&nbsp;&nbsp;}<br>}<br><span class="cm">// użycie:</span><br><span class="kw">var</span> b = <span class="kw">new</span> <span class="cl">Box</span>&lt;&gt;(<span class="str">"hello"</span>).<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">toUpperCase</span>);</div></div>
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Metoda generyczna z ograniczeniem</span></div>
+  <div class="code-block"><span class="kw">public static</span> &lt;<span class="cl">T</span> <span class="kw">extends</span> <span class="cl">Comparable</span>&lt;<span class="cl">T</span>&gt;&gt;<br><span class="cl">T</span> <span class="fn">max</span>(<span class="cl">List</span>&lt;<span class="cl">T</span>&gt; list) {<br>&nbsp;&nbsp;<span class="kw">if</span> (list.<span class="fn">isEmpty</span>())<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw new</span> <span class="cl">NoSuchElementException</span>();<br>&nbsp;&nbsp;<span class="cl">T</span> result = list.<span class="fn">get</span>(<span class="num-lit">0</span>);<br>&nbsp;&nbsp;<span class="kw">for</span> (<span class="cl">T</span> item : list)<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (item.<span class="fn">compareTo</span>(result) &gt; <span class="num-lit">0</span>) result = item;<br>&nbsp;&nbsp;<span class="kw">return</span> result;<br>}<br><span class="cm">// działa dla Integer, String, Double...</span></div></div>
+</div>`
+  },
+  {
+    title: 'Lambdy i interfejsy funkcyjne',
+    html: `
+<div class="lesson-title-row"><h1>Lambdy i interfejsy funkcyjne</h1>
+<div class="lesson-tags"><span class="tag tag-blue">Programowanie funkcyjne</span><span class="tag tag-gray">Java 8+</span></div></div>
+<div class="lead">Lambda to anonimowa implementacja interfejsu funkcyjnego — interfejsu z dokładnie jedną abstrakcyjną metodą. Zamiast anonimowej klasy piszesz zwięzłe wyrażenie.</div>
+<div class="code-grid-2">
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Główne interfejsy funkcyjne</span></div>
+  <div class="code-block"><span class="cm">// Function&lt;T,R&gt; — wejście T, wyjście R</span><br><span class="cl">Function</span>&lt;<span class="cl">String</span>,<span class="cl">Integer</span>&gt; len = <span class="cl">String</span>::<span class="fn">length</span>;<br><span class="fn">len</span>.<span class="fn">apply</span>(<span class="str">"Java"</span>); <span class="cm">// → 4</span><br><br><span class="cm">// Predicate&lt;T&gt; — wyjście boolean</span><br><span class="cl">Predicate</span>&lt;<span class="cl">String</span>&gt; empty = <span class="cl">String</span>::<span class="fn">isEmpty</span>;<br><span class="cl">Predicate</span>&lt;<span class="cl">String</span>&gt; notEmpty = empty.<span class="fn">negate</span>();<br><br><span class="cm">// Consumer&lt;T&gt; — brak wyjścia</span><br><span class="cl">Consumer</span>&lt;<span class="cl">String</span>&gt; print = <span class="cl">System</span>.out::<span class="fn">println</span>;<br><br><span class="cm">// Supplier&lt;T&gt; — brak wejścia, wyjście T</span><br><span class="cl">Supplier</span>&lt;<span class="cl">List</span>&lt;<span class="cl">String</span>&gt;&gt; newList = <span class="cl">ArrayList</span>::<span class="kw">new</span>;</div></div>
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Składnia lambdy — skróty</span></div>
+  <div class="code-block"><span class="cm">// pełna forma</span><br><span class="cl">Comparator</span>&lt;<span class="cl">String</span>&gt; c1 = (a,b) -&gt; { <span class="kw">return</span> a.<span class="fn">compareTo</span>(b); };<br><br><span class="cm">// jednolinijkowe — bez return i {}</span><br><span class="cl">Comparator</span>&lt;<span class="cl">String</span>&gt; c2 = (a,b) -&gt; a.<span class="fn">compareTo</span>(b);<br><br><span class="cm">// referencja do metody</span><br><span class="cl">Comparator</span>&lt;<span class="cl">String</span>&gt; c3 = <span class="cl">String</span>::<span class="fn">compareTo</span>;<br><br><span class="cm">// wszystkie trzy są równoważne</span></div></div>
+</div>
+<div class="code-grid-2" style="margin-top:8px;">
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Kompozycja — andThen, compose</span></div>
+  <div class="code-block"><span class="cl">Function</span>&lt;<span class="cl">String</span>,<span class="cl">String</span>&gt; trim = <span class="cl">String</span>::<span class="fn">trim</span>;<br><span class="cl">Function</span>&lt;<span class="cl">String</span>,<span class="cl">String</span>&gt; upper = <span class="cl">String</span>::<span class="fn">toUpperCase</span>;<br><br><span class="cl">Function</span>&lt;<span class="cl">String</span>,<span class="cl">String</span>&gt; clean = trim.<span class="fn">andThen</span>(upper);<br><br>clean.<span class="fn">apply</span>(<span class="str">"  java  "</span>); <span class="cm">// → "JAVA"</span></div></div>
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Predicate — łączenie warunków</span></div>
+  <div class="code-block"><span class="cl">Predicate</span>&lt;<span class="cl">Integer</span>&gt; positive = n -&gt; n &gt; <span class="num-lit">0</span>;<br><span class="cl">Predicate</span>&lt;<span class="cl">Integer</span>&gt; even = n -&gt; n % <span class="num-lit">2</span> == <span class="num-lit">0</span>;<br><br><span class="cl">Predicate</span>&lt;<span class="cl">Integer</span>&gt; positiveEven = positive.<span class="fn">and</span>(even);<br><br>positiveEven.<span class="fn">test</span>(<span class="num-lit">4</span>);  <span class="cm">// → true</span><br>positiveEven.<span class="fn">test</span>(-<span class="num-lit">4</span>); <span class="cm">// → false</span></div></div>
+</div>
+<div class="note-block"><div class="note-head"><code>@FunctionalInterface</code><span class="note-badge">Własny interfejs</span></div>
+<p>Możesz oznaczyć dowolny interfejs z jedną abstrakcyjną metodą adnotacją <code>@FunctionalInterface</code>. Kompilator zgłosi błąd jeśli dodasz drugą metodę — chroni to projekt przed przypadkowym zepsuciem kompatybilności z lambdami.</p></div>`
+  },
+  {
+    title: 'Stream API',
+    html: `
+<div class="lesson-title-row"><h1>Stream API — potoki operacji</h1>
+<div class="lesson-tags"><span class="tag tag-green">Przetwarzanie danych</span><span class="tag tag-gray">Java 8+</span></div></div>
+<div class="lead">Stream to sekwencja elementów, przez którą przepuszczasz dane przez kolejne operacje. Kod jest deklaratywny — mówisz <em>co</em> chcesz uzyskać, nie <em>jak</em> to liczyć.</div>
+<div class="cards-3">
+  <div class="card"><div class="card-icon">🔍</div><h4>Operacje pośrednie (lazy)</h4><p><code>filter</code>, <code>map</code>, <code>sorted</code>, <code>distinct</code>, <code>limit</code> — nie wykonują się od razu, budują tylko potok.</p></div>
+  <div class="card"><div class="card-icon">🏁</div><h4>Operacje terminalne</h4><p><code>collect</code>, <code>forEach</code>, <code>count</code>, <code>reduce</code>, <code>findFirst</code> — uruchamiają cały potok i zwracają wynik.</p></div>
+  <div class="card"><div class="card-icon">📊</div><h4>Collectors</h4><p><code>Collectors.toList()</code>, <code>joining(", ")</code>, <code>groupingBy(f)</code>, <code>counting()</code> — zbierają wyniki do różnych struktur.</p></div>
+</div>
+<div class="code-grid-2">
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">filter + map + collect</span></div>
+  <div class="code-block"><span class="cl">List</span>&lt;<span class="cl">String</span>&gt; names = <span class="cl">List</span>.<span class="fn">of</span>(<br>&nbsp;&nbsp;<span class="str">"Anna"</span>,<span class="str">"Bartek"</span>,<span class="str">"Ada"</span>,<span class="str">"Cezary"</span><br>);<br><br><span class="cl">List</span>&lt;<span class="cl">String</span>&gt; result = names.<span class="fn">stream</span>()<br>&nbsp;&nbsp;.<span class="fn">filter</span>(n -&gt; n.<span class="fn">startsWith</span>(<span class="str">"A"</span>))<br>&nbsp;&nbsp;.<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">toUpperCase</span>)<br>&nbsp;&nbsp;.<span class="fn">sorted</span>()<br>&nbsp;&nbsp;.<span class="fn">collect</span>(<span class="cl">Collectors</span>.<span class="fn">toList</span>());<br><br><span class="cm">// result = ["ADA", "ANNA"]</span></div></div>
+  <div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">reduce i groupingBy</span></div>
+  <div class="code-block"><span class="cl">List</span>&lt;<span class="cl">Integer</span>&gt; nums = <span class="cl">List</span>.<span class="fn">of</span>(<span class="num-lit">1</span>,<span class="num-lit">2</span>,<span class="num-lit">3</span>,<span class="num-lit">4</span>,<span class="num-lit">5</span>);<br><br><span class="kw">int</span> sum = nums.<span class="fn">stream</span>()<br>&nbsp;&nbsp;.<span class="fn">reduce</span>(<span class="num-lit">0</span>, <span class="cl">Integer</span>::<span class="fn">sum</span>);<br><span class="cm">// sum = 15</span><br><br><span class="cl">Map</span>&lt;<span class="cl">Integer</span>,<span class="cl">List</span>&lt;<span class="cl">String</span>&gt;&gt; byLen =<br>&nbsp;&nbsp;names.<span class="fn">stream</span>()<br>&nbsp;&nbsp;.<span class="fn">collect</span>(<span class="cl">Collectors</span>.<span class="fn">groupingBy</span>(<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">String</span>::<span class="fn">length</span>));</div></div>
+</div>`
+  },
+  {
+    title: 'Optional',
+    html: `
+<div class="lesson-title-row"><h1>Optional — koniec z null</h1>
+<div class="lesson-tags"><span class="tag tag-yellow">Obsługa braku wartości</span><span class="tag tag-gray">Java 8+</span></div></div>
+<div class="lead">Optional&lt;T&gt; to kontener który może trzymać wartość albo być pusty. Zamiast zwracać null i ryzykować NPE, zwracasz Optional — a wywołujący jest zmuszony obsłużyć brak wartości.</div>
+<div class="section-h2">Porównanie: null vs Optional</div>
+<table class="data-table">
+  <thead><tr><th>Sytuacja</th><th>Bez Optional</th><th>Z Optional</th><th>Uwaga</th></tr></thead>
+  <tbody>
+    <tr><td>Brak wartości</td><td><code>return null</code></td><td><code>return Optional.empty()</code></td><td><span class="ok">bezpieczne</span></td></tr>
+    <tr><td>Jest wartość</td><td><code>return obj</code></td><td><code>return Optional.of(obj)</code></td><td><span class="ok">bezpieczne</span></td></tr>
+    <tr><td>Może być null</td><td><code>return obj</code></td><td><code>return Optional.ofNullable(obj)</code></td><td><span class="ok">bezpieczne</span></td></tr>
+    <tr><td>Domyślna wartość</td><td><code>obj != null ? obj : def</code></td><td><code>opt.orElse(def)</code></td><td><span class="inf">czytelniejsze</span></td></tr>
+    <tr><td>Wyjątek gdy brak</td><td>ręczny if + throw</td><td><code>opt.orElseThrow()</code></td><td><span class="inf">zwięźlejsze</span></td></tr>
+    <tr><td>Transformacja</td><td>null-check + map</td><td><code>opt.map(f).filter(p)</code></td><td><span class="ok">pipeline</span></td></tr>
+  </tbody>
+</table>
+<div class="code-wrap"><div class="code-header"><div class="code-dot" style="background:#ff5f57"></div><div class="code-dot" style="background:#febc2e"></div><div class="code-dot" style="background:#28c840"></div><span class="code-filename">Optional — typowe wzorce użycia</span></div>
+<div class="code-block" style="line-height:1.85;"><span class="cm">// tworzenie</span><br><span class="cl">Optional</span>&lt;<span class="cl">String</span>&gt; a = <span class="cl">Optional</span>.<span class="fn">of</span>(<span class="str">"Java"</span>);<br><span class="cl">Optional</span>&lt;<span class="cl">String</span>&gt; b = <span class="cl">Optional</span>.<span class="fn">empty</span>();<br><span class="cl">Optional</span>&lt;<span class="cl">String</span>&gt; c = <span class="cl">Optional</span>.<span class="fn">ofNullable</span>(maybeNull);<br><br><span class="cm">// map nie wywołuje się na empty</span><br><span class="cl">Optional</span>&lt;<span class="cl">Integer</span>&gt; len = a.<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">length</span>); <span class="cm">// Optional[4]</span><br><span class="cl">Optional</span>&lt;<span class="cl">Integer</span>&gt; lenB = b.<span class="fn">map</span>(<span class="cl">String</span>::<span class="fn">length</span>); <span class="cm">// Optional.empty</span><br><br><span class="kw">int</span> x = len.<span class="fn">orElse</span>(<span class="num-lit">0</span>);           <span class="cm">// 4</span><br><span class="kw">int</span> y = lenB.<span class="fn">orElse</span>(<span class="num-lit">0</span>);          <span class="cm">// 0</span><br><span class="kw">int</span> z = len.<span class="fn">orElseThrow</span>(); <span class="cm">// rzuca NoSuchElementException gdy empty</span></div></div>`
+  },
+  {
+    title: 'FAQ',
+    html: `
+<div class="lesson-title-row"><h1>FAQ</h1>
+<div class="lesson-tags"><span class="tag tag-gray">Najczęstsze pytania</span></div></div>
+<div class="lead">Odpowiedzi na pytania które pojawiają się podczas nauki generics, lambd i Stream API.</div>
+<div class="faq">
+  <div class="faq-item"><div class="faq-q">Czym różni się <code>map</code> od <code>flatMap</code> w Stream?<span class="arrow">▾</span></div><div class="faq-a"><code>map</code> zamienia każdy element na inny element: <code>Stream&lt;T&gt; → Stream&lt;R&gt;</code>. <code>flatMap</code> zamienia każdy element na strumień, a potem spłaszcza wszystkie strumienie w jeden — użyteczne gdy masz listę list i chcesz uzyskać płaską listę wszystkich elementów.</div></div>
+  <div class="faq-item"><div class="faq-q">Kiedy używać <code>? extends T</code>, a kiedy <code>? super T</code>?<span class="arrow">▾</span></div><div class="faq-a">Zasada PECS (Producer Extends, Consumer Super): jeśli kolekcja <em>produkuje</em> elementy (czytasz z niej) — używaj <code>? extends T</code>. Jeśli <em>konsumuje</em> (piszesz do niej) — używaj <code>? super T</code>. Jeśli robisz obie rzeczy — użyj konkretnego typu T bez wildcard.</div></div>
+  <div class="faq-item"><div class="faq-q">Czy stream można przeiterować dwa razy?<span class="arrow">▾</span></div><div class="faq-a">Nie — stream można skonsumować tylko raz. Po wywołaniu operacji terminalnej (np. <code>collect</code>, <code>forEach</code>) stream jest zamknięty. Próba ponownego użycia rzuca <code>IllegalStateException</code>. Jeśli potrzebujesz wielokrotnego dostępu, zbierz wyniki do listy.</div></div>
+  <div class="faq-item"><div class="faq-q">Co to jest type erasure i dlaczego nie można zrobić <code>new T()</code>?<span class="arrow">▾</span></div><div class="faq-a">W czasie kompilacji Java usuwa informacje o typie generycznym — to type erasure. W bytecode <code>Box&lt;String&gt;</code> i <code>Box&lt;Integer&gt;</code> to ta sama klasa. Dlatego w runtime nie wiadomo co to T i nie można tworzyć instancji. Obejście: przekaż <code>Class&lt;T&gt; clazz</code> i użyj <code>clazz.getDeclaredConstructor().newInstance()</code>.</div></div>
+  <div class="faq-item"><div class="faq-q">Jaka różnica między <code>orElse</code> a <code>orElseGet</code> w Optional?<span class="arrow">▾</span></div><div class="faq-a"><code>orElse(default)</code> zawsze ewaluuje <code>default</code> — nawet gdy Optional ma wartość. <code>orElseGet(() -&gt; expensive())</code> wywołuje dostawcę tylko gdy Optional jest pusty. Jeśli wartość domyślna jest kosztowna do obliczenia, zawsze preferuj <code>orElseGet</code>.</div></div>
+  <div class="faq-item"><div class="faq-q">Czy <code>var</code> to dynamiczne typowanie?<span class="arrow">▾</span></div><div class="faq-a">Nie — <code>var</code> (od Java 10) to wnioskowanie typów lokalnych. Kompilator sam ustala typ zmiennej na podstawie wyrażenia po prawej stronie. Typ jest nadal statyczny i znany w czasie kompilacji — <code>var</code> to tylko skrót składniowy, nie dynamika jak w Pythonie czy JavaScript.</div></div>
+</div>`
+  }
+];
+
+// Combined: 0-6 = JavaMaster markdown, 7-11 = java-nauka HTML
+const TOTAL = mdLessons.length + htmlLessons.length;
+
+function getLessonTitle(idx) {
+  if (idx < mdLessons.length) return mdLessons[idx].title;
+  return htmlLessons[idx - mdLessons.length].title;
+}
+
+function getLessonHTML(idx) {
+  if (idx < mdLessons.length) {
+    return `<div class="markdown-body">${marked.parse(mdLessons[idx].md)}</div>`;
+  }
+  return htmlLessons[idx - mdLessons.length].html;
+}
+
+/* ─── STATE ─── */
+let currentIdx = 0;
+
+function renderLesson(idx) {
+  const isFirst = idx === 0;
+  const isLast  = idx === TOTAL - 1;
+
+  document.getElementById('contentArea').innerHTML = `
+    <div class="lesson-content">
+      ${getLessonHTML(idx)}
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="prevLesson()" ${isFirst ? 'disabled' : ''}>← Poprzednia lekcja</button>
+        <button class="nav-btn primary" onclick="nextLesson()" ${isLast ? 'disabled' : ''}>Następna lekcja →</button>
+      </div>
+    </div>`;
+
+  document.getElementById('breadcrumbText').textContent = getLessonTitle(idx);
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.id) === idx);
+  });
+
+  document.getElementById('contentArea').scrollTop = 0;
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+}
+
+function switchLesson(idx) { currentIdx = idx; renderLesson(idx); }
+function prevLesson() { if (currentIdx > 0) switchLesson(currentIdx - 1); }
+function nextLesson() { if (currentIdx < TOTAL - 1) switchLesson(currentIdx + 1); }
+
+/* ─── SIDEBAR / AI TOGGLE ─── */
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+function toggleAI() {
+  document.getElementById('aiPanel').classList.toggle('collapsed');
+  document.getElementById('aiBtn').classList.toggle('active');
+}
+
+/* ─── MODAL ─── */
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ─── 5-CLICK EASTER EGG on "JavaLab" logo ─── */
+let eggCount = 0;
+const eggDots = document.querySelectorAll('.egg-dot');
+
+function handleLogoClick() {
+  eggCount++;
+  eggDots.forEach((d, i) => d.classList.toggle('active', i < eggCount));
+  if (eggCount >= 5) {
+    eggCount = 0;
+    eggDots.forEach(d => d.classList.remove('active'));
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+document.getElementById('logoIcon').addEventListener('click', handleLogoClick);
+document.getElementById('logoText').addEventListener('click', handleLogoClick);
+
+/* ─── INIT ─── */
+renderLesson(0);
+</script>
+</body>
+</html>
